@@ -2,7 +2,7 @@
 
 # Set the base directory for the frontend
 [build]
-  base = "."
+  base = "env-dashboard/frontend"
   publish = "."
   command = "echo 'Frontend is a static SPA - no build step needed'"
 
