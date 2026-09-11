@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SkyGuard AI - Real-Time Environmental Monitoring</title>
+    <link rel="icon" type="image/png" href="/assets/skyguard-official.png" />
+    <script async src="https://cdn.tailwindcss.com"></script>
+    <script async src="/socket.io/socket.io.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="/css/app.css" />
+</head>
+<body>
+    <div id="app">
+        <div id="login-screen" class="login-wrap">
+            <form id="login-form" class="login-card" autocomplete="off">
+                <div class="login-header">
+                    <img src="/assets/skyguard-official.png" alt="SkyGuard AI" class="login-logo" />
+                    <h1>SkyGuard AI</h1>
+                    <p>Real-Time Environmental Monitoring</p>
+                </div>
+                <label>
+                    <span>Username</span>
+                    <input type="text" name="username" required value="admin" />
+                </label>
+                <label>
+                    <span>Password</span>
+                    <input type="password" name="password" required value="admin123!Change" />
+                </label>
+                <div id="login-error" class="login-error" hidden></div>
+                <button type="submit" class="login-btn">
+                    <i class="fa-solid fa-right-to-bracket"></i>
+                    <span>Sign in</span>
+                </button>
+                <p class="login-hint">Default seeded credentials (memory mode). <code>admin / admin123!Change</code></p>
+            </form>
+        </div>
+        <div id="main-app" hidden>
+            <aside class="sidebar">
+                <div class="brand">
+                    <img src="/assets/skyguard-official.png" alt="SkyGuard AI" class="brand-logo" />
+                    <div class="brand-text">
+                        <span class="name">SkyGuard AI</span>
+                        <span class="tagline">Environmental Monitoring</span>
+                        <small id="user-chip">…</small>
+                    </div>
+                </div>
+                <nav id="primary-nav"></nav>
+                <div class="sidebar-footer">
+                    <div class="conn-state" id="conn-state"><span class="dot"></span><span class="lbl">Disconnected</span></div>
+                    <button id="logout-btn" class="logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+                </div>
+            </aside>
+            <main class="main-content">
+                <header class="page-header">
+                    <div>
+                        <h1 id="page-title">Dashboard</h1>
+                        <p id="page-sub">Operational overview of the SkyGuard fleet.</p>
+                    </div>
+                    <div class="page-actions" id="page-actions"></div>
+                </header>
+                <section id="page-root" class="page-root"></section>
+            </main>
+            <div id="toast-host"></div>
+            <div id="modal-host"></div>
+        </div>
+    </div>
+    <script>
+  // Set the backend API base URL for the frontend
+  // Backend runs on port 4000, frontend on port 3000 (static server)
+  window.SKYGUARD_API_BASE = 'http://localhost:4000';
+</script>
+<script type="module" src="/js/main.js"></script>
+</body>
+</html>
