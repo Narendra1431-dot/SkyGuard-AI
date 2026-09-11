@@ -1,0 +1,48 @@
+services:
+  influxdb:
+    image: influxdb:2.7
+    ports:
+      - "8086:8086"
+    environment:
+      DOCKER_INFLUXDB_INIT_MODE: setup
+      DOCKER_INFLUXDB_INIT_USERNAME: ${INFLUX_USERNAME:-skyguard}
+      DOCKER_INFLUXDB_INIT_PASSWORD: ${INFLUX_PASSWORD:-skyguard-local-password}
+      DOCKER_INFLUXDB_INIT_ORG: ${INFLUX_ORG:-skyguard}
+      DOCKER_INFLUXDB_INIT_BUCKET: ${INFLUX_BUCKET:-env_data}
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: ${INFLUX_TOKEN:-skyguard-local-token}
+    volumes:
+      - influx-data:/var/lib/influxdb2
+      - influx-config:/etc/influxdb2
+    healthcheck:
+      test: ["CMD", "influx", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "4000:4000"
+    environment:
+      PORT: 4000
+      CORS_ORIGIN: ${CORS_ORIGIN:-*}
+      USE_INFLUXDB: "true"
+      INFLUX_URL: http://influxdb:8086
+      INFLUX_TOKEN: ${INFLUX_TOKEN:-skyguard-local-token}
+      INFLUX_ORG: ${INFLUX_ORG:-skyguard}
+      INFLUX_BUCKET: ${INFLUX_BUCKET:-env_data}
+      TICK_MS: ${TICK_MS:-2500}
+      STATION_COUNT: ${STATION_COUNT:-5}
+    depends_on:
+      influxdb:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:4000/api/v1/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  influx-data:
+  influx-config:

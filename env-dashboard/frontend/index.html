@@ -69,8 +69,10 @@
     </div>
     <script>
   // Set the backend API base URL for the frontend
-  // Backend runs on port 4000, frontend on port 3000 (static server)
-  window.SKYGUARD_API_BASE = 'http://localhost:4000';
+  // Use Netlify environment variable in production, localhost for development
+  window.SKYGUARD_API_BASE = (typeof process !== 'undefined' && process.env && process.env.SKYGUARD_API_BASE)
+    || (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_BASE)
+    || 'https://skyguard-backend.onrender.com';
 </script>
 <script type="module" src="/js/main.js"></script>
 </body>

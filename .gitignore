@@ -1,2 +1,74 @@
 # Auxly - AI Task Management (internal data)
 .auxly/
+
+# Environment / Secrets
+.env
+.env.*
+!.env.example
+
+# Dependencies
+node_modules/
+
+# Logs
+*.log
+*.err
+
+# IDE / Editor
+.cursor/
+.vscode/
+.kilo/
+.http-forge/
+.llm-chat-history/
+
+# Test output files
+test-output-*.txt
+test-results/
+backend-start.*.log
+server*.log
+server*.err
+e2e.log
+
+# Debug / temporary scripts
+debug-*.js
+test.js
+test.txt
+backend.err
+
+# Audit / report markdown (generated, not source)
+*_AUDIT_REPORT.md
+*_FORENSIC_AUDIT.md
+*_AGENT_TRUTH.md
+*_VERIFICATION_REPORT.md
+*_COMPLETION_REPORT.md
+*_MASTER_AUDIT.md
+*_SECOND_FORENSIC_AUDIT.md
+SKYGUARD_PENDING_GAPS.json
+VERIFICATION-REPORT.md
+ML_FINAL_AUDIT_REPORT.md
+BASELINE_BEFORE_GAP_CLOSURE.md
+implementation_plan.txt
+
+# Runtime / generated data
+env-dashboard/backend/data/
+env-dashboard/backend/knowledge/
+env-dashboard/backend/reports/
+
+# Backup / broken files
+*.bak
+*.broken
+
+# Test output files in backend
+env-dashboard/backend/test-output-*.txt
+env-dashboard/backend/test-*.txt
+env-dashboard/backend/smoke-out.txt
+env-dashboard/backend/test-results/
+env-dashboard/backend/test/_*.tmp.cjs
+env-dashboard/backend/test/ui-interaction-*.json
+env-dashboard/backend/test/interaction.run.log
+
+# Misc
+node
+cd
+package-lock.json
+.mcp.json
+.cursorrules
