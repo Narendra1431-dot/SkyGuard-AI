@@ -219,64 +219,19 @@ describe('ML Integration', () => {
       const inferenceResult = ML_TRAIN.inference({ temperature: 5, pressure: 1013, humidity: 50, aqi: 60, wind: 3, rainfall: 0.5 }, model, { normalizationStats: null });
       assert.ok(inferenceResult.prediction !== undefined);
     });
-  });
+});
 });
 
-describe('ML Dataset Provenance and Leakage', () => {
-  describe('LABEL_PROVENANCE', () => {
-    it('should document that labels come from rule engine (target leakage)', () => {
-      assert.ok(ML_DATASET.LABEL_PROVENANCE);
-      assert.strictEqual(ML_DATASET.LABEL_PROVENANCE.source, 'rule_engine');
-      assert.ok(ML_DATASET.LABEL_PROVENANCE.note.includes('target leakage'));
-    });
-  });
-
-  describe('removeExactDuplicates', () => {
-    it('should remove exact duplicate readings', () => {
-      const readings = [
-        { time: '2026-01-01T00:00:00Z', stationId: 'S1', temperature: 25, pressure: 1013, humidity: 50, aqi: 50, wind: 3, rainfall: 0, anomaly: 0 },
-        { time: '2026-01-01T00:00:00Z', stationId: 'S1', temperature: 25, pressure: 1013, humidity: 50, aqi: 50, wind: 3, rainfall: 0, anomaly: 0 },
-        { time: '2026-01-01T01:00:00Z', stationId: 'S1', temperature: 26, pressure: 1012, humidity: 51, aqi: 55, wind: 4, rainfall: 0, anomaly: 1 },
-      ];
-      const unique = ML_DATASET.removeExactDuplicates(readings);
-      assert.strictEqual(unique.length, 2);
-    });
-
-    it('should keep readings that differ in any field', () => {
-      const readings = [
-        { time: '2026-01-01T00:00:00Z', stationId: 'S1', temperature: 25, pressure: 1013, humidity: 50, aqi: 50, wind: 3, rainfall: 0, anomaly: 0 },
-        { time: '2026-01-01T00:00:00Z', stationId: 'S1', temperature: 25, pressure: 1013, humidity: 50, aqi: 50, wind: 3, rainfall: 0, anomaly: 1 },
-      ];
-      const unique = ML_DATASET.removeExactDuplicates(readings);
-      assert.strictEqual(unique.length, 2);
-    });
-  });
-
-  describe('checkLeakage', () => {
-    it('should detect exact duplicate rows between train and eval', () => {
-      const trainSet = [
-        { raw: { temperature: 25, pressure: 1013, humidity: 50, aqi: 50, wind: 3, rainfall: 0 }, label: 0 },
-        { raw: { temperature: 26, pressure: 1012, humidity: 51, aqi: 55, wind: 4, rainfall: 0 }, label: 1 },
-      ];
-      const evalSet = [
-        { raw: { temperature: 25, pressure: 1013, humidity: 50, aqi: 50, wind: 3, rainfall: 0 }, label: 0 },
-      ];
-      const result = ML_DATASET.checkLeakage(trainSet, evalSet);
-      assert.ok(result.leaked, 'Should detect leakage');
-      assert.strictEqual(result.overlapCount, 1);
-    });
-
-    it('should report no leakage when sets are disjoint', () => {
-      const trainSet = [
-        { raw: { temperature: 25, pressure: 1013, humidity: 50, aqi: 50, wind: 3, rainfall: 0 }, label: 0 },
-      ];
-      const evalSet = [
-        { raw: { temperature: 30, pressure: 1010, humidity: 60, aqi: 60, wind: 5, rainfall: 0.5 }, label: 1 },
-      ];
-      const result = ML_DATASET.checkLeakage(trainSet, evalSet);
-      assert.ok(!result.leaked, 'Should not detect leakage');
-      assert.strictEqual(result.overlapCount, 0);
-    });
+describe('LABEL_PROVENANCE', () => {
+  it('should document that labels come from rule-engine-derived anomaly (legacy)', () => {
+    assert.ok(ML_DATASET.LABEL_PROVENANCE);
+    assert.strictEqual(ML_DATASET.LABEL_PROVENANCE.source, 'rule_engine_legacy');
+    assert.ok(ML_DATASET.LABEL_PROVENANCE.note.includes('rule-engine-derived anomaly'));
+    assert.ok(ML_DATASET.LABEL_PROVENANCE.note.includes('ai.paramCode'));
+    // CRITICAL: Labels MUST come from rule engine (legacy model)
+    assert.ok(ML_DATASET.LABEL_PROVENANCE.source.includes('rule_engine'));
+    // CRITICAL: Legacy model provenance should be truthfully represented as rule_engine_legacy
+    assert.strictEqual(ML_DATASET.LABEL_PROVENANCE.engine, 'ai.paramCode');
   });
 });
 

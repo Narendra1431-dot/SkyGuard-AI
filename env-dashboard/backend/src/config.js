@@ -4,12 +4,14 @@ require('dotenv').config();
 const env = process.env;
 const isProd = (env.NODE_ENV || '').toLowerCase() === 'production';
 const pgEnabled = (env.PG_ENABLED || '').toLowerCase() === 'true';
+const demoMode = (env.DEMO_MODE || '').toLowerCase() === 'true';
 
 const KNOWN_DEFAULT_SECRETS = new Set([
   'change-me-to-a-long-random-string-please',
   'admin123!change',
   'admin123!Change',
   'skyguard-local-password',
+  'd0af01651ecf7fc17525d0c69fc30f52ec1aaead625b5acb39eabbe84a582736',
 ]);
 
 function isWeakSecret(value) {
@@ -21,28 +23,25 @@ function isWeakSecret(value) {
 
 if (isProd && process.env.SKYGUARD_ALLOW_CONFIG_FAIL !== '1') {
   if (isWeakSecret(env.JWT_SECRET)) {
-    console.error('FATAL: JWT_SECRET is missing or uses a known default. Set JWT_SECRET to a 32+ char random value.');
+    console.error('FATAL: JWT_SECRET is weak or uses known default. Set a strong 32+ char random value.');
     process.exit(2);
   }
-  if (isWeakSecret(env.ADMIN_PASSWORD) || isWeakSecret(env.ADMIN_USERNAME) || (env.ADMIN_PASSWORD || '').toLowerCase() === 'admin' || (env.ADMIN_USERNAME || '').toLowerCase() === 'admin') {
-    console.error('FATAL: ADMIN_USERNAME/ADMIN_PASSWORD must be set to a non-default value with ADMIN_PASSWORD >= 12 chars.');
+  if (!env.ADMIN_USERNAME || (env.ADMIN_USERNAME || '').toLowerCase() === 'admin') {
+    console.error('FATAL: ADMIN_USERNAME must be set to a non-default value.');
     process.exit(2);
   }
-  if ((env.CORS_ORIGIN || '*') === '*') {
-    console.error('FATAL: CORS_ORIGIN must be set to a specific origin in production.');
-    process.exit(2);
-  }
-  if ((env.PROVIDER_MODE || 'open-meteo') === 'sim' || (env.PROVIDER_MODE || '') === 'fixture') {
-    console.error('FATAL: PROVIDER_MODE=sim/fixture is not allowed in production.');
+  if (isWeakSecret(env.ADMIN_PASSWORD)) {
+    console.error('FATAL: ADMIN_PASSWORD is weak. Set a strong password >= 12 chars.');
     process.exit(2);
   }
 }
 
 module.exports = {
   port: parseInt(env.PORT || '4000', 10),
-  corsOrigin: env.CORS_ORIGIN || (isProd ? '' : '*'),
+  corsOrigin: env.CORS_ORIGIN || (isProd ? 'https://skyguard-ai-software.netlify.app' : '*'),
   isProduction: isProd,
   nodeEnv: env.NODE_ENV || 'development',
+  demoMode,
 
   influx: {
     url: env.INFLUX_URL || 'http://localhost:8086',
@@ -57,15 +56,15 @@ module.exports = {
     host: env.PG_HOST || 'localhost',
     port: parseInt(env.PG_PORT || '5432', 10),
     user: env.PG_USER || 'skyguard',
-    password: env.PG_PASSWORD || 'skyguard-local-password',
+    password: env.PG_PASSWORD || 'ChangeMeToSecurePGPass123!',
     database: env.PG_DATABASE || 'skyguard',
   },
 
   auth: {
-    jwtSecret: env.JWT_SECRET || 'change-me-to-a-long-random-string-please',
+    jwtSecret: env.JWT_SECRET,
     expiresHours: parseInt(env.JWT_EXPIRES_HOURS || '12', 10),
-    adminUsername: env.ADMIN_USERNAME || 'admin',
-    adminPassword: env.ADMIN_PASSWORD || 'admin123!Change',
+    adminUsername: env.ADMIN_USERNAME,
+    adminPassword: env.ADMIN_PASSWORD,
   },
 
   sim: {
@@ -83,7 +82,7 @@ module.exports = {
   },
 
   llm: {
-    provider: env.LLM_PROVIDER || 'deterministic-fallback',
+    provider: env.LLM_PROVIDER || 'ollama',
     openaiApiKey: env.OPENAI_API_KEY || null,
     openaiModel: env.OPENAI_MODEL || 'gpt-4o-mini',
     azureOpenaiEndpoint: env.AZURE_OPENAI_ENDPOINT || null,

@@ -1,0 +1,9 @@
+
+const fs = require('fs');
+const modelInfo = JSON.parse(fs.readFileSync('data/ml/model_info.json', 'utf8'));
+const evalLines = fs.readFileSync('data/ml/eval.jsonl', 'utf8').split('\\n').filter(l => l.trim());
+
+console.log('=== CURRENT STATE ===');
+console.log('model_info.json evaluationStatus:', modelInfo.evaluationStatus);
+console.log('eval.jsonl rows:', evalLines.length);
+

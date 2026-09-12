@@ -1,59 +1,9 @@
 'use strict';
 
-/**
- * LLM adapter. Providers:
- *   - openai        (OPENAI_API_KEY, real semantic LLM)
- *   - azure-openai  (AZURE_OPENAI_*)
- *   - deterministic-fallback (template-based; labeled as non-LLM)
- *
- * Budgets:
- *   - per-call max tokens (soft: response_format + max_tokens)
- *   - daily token budget (hard: throws when exceeded)
- *
- * Schema:
- *   The adapter enforces a JSON schema via OpenAI response_format when
- *   available; otherwise it parses the response and retries on failure.
- *   Deterministic fallback always returns schema-valid output.
- */
-
-const AGENT_RESPONSE_SCHEMA = {
-  type: 'object',
-  required: ['situation', 'evidence', 'hypotheses', 'confidence', 'recommendation', 'requiredAction', 'approvalRequirement', 'auditRef'],
-  properties: {
-    situation: { type: 'string' },
-    evidence: { type: 'array', items: { type: 'object' } },
-    hypotheses: { type: 'array', items: { type: 'object' } },
-    confidence: { type: 'number', minimum: 0, maximum: 1 },
-    recommendation: { type: 'string' },
-    requiredAction: { type: 'string' },
-    approvalRequirement: { type: 'string' },
-    auditRef: { type: 'string' },
-  },
-  additionalProperties: true,
-};
-
-let _state = {
-  usedToday: 0,
-  day: new Date().toISOString().slice(0, 10),
-};
-
-function _resetBudgetIfNewDay() {
-  const today = new Date().toISOString().slice(0, 10);
-  if (_state.day !== today) { _state.usedToday = 0; _state.day = today; }
-}
-
-function _recordTokens(used) { _state.usedToday += used; }
-function budgetUsed() { _resetBudgetIfNewDay(); return _state.usedToday; }
-
-class BudgetExceededError extends Error {
-  constructor() { super('LLM daily token budget exceeded'); this.code = 'BUDGET_EXCEEDED'; }
-}
-
 class DeterministicProvider {
   constructor() { this.id = 'deterministic-fallback'; }
   async chat({ system, user, schema, maxTokens }) {
-    // Extract any structured payload already provided in the user prompt
-    const parsed = tryParseJson(user);
+    const parsed = this._parseJson(user);
     if (parsed && typeof parsed === 'object') {
       return {
         ok: true,
@@ -93,6 +43,29 @@ class DeterministicProvider {
       }),
     };
   }
+
+  _parseJson(s) {
+    if (!s || typeof s !== 'string') return null;
+    try { return JSON.parse(s); }
+    catch (_) {
+      const m = s.match(/\{[\s\S]*\}/);
+      if (m) { try { return JSON.parse(m[0]); } catch (_) {} }
+      return null;
+    }
+  }
+}
+
+function createProvider(cfg = {}) {
+  if (cfg.provider === 'openai' && cfg.openaiApiKey) {
+    return new OpenAIProvider({ apiKey: cfg.openaiApiKey, model: cfg.openaiModel });
+  }
+  if (cfg.provider === 'azure-openai' && cfg.azureOpenaiEndpoint && cfg.azureOpenaiKey && cfg.azureOpenaiDeployment) {
+    return new AzureOpenAIProvider({ endpoint: cfg.azureOpenaiEndpoint, apiKey: cfg.azureOpenaiKey, deployment: cfg.azureOpenaiDeployment, apiVersion: cfg.azureOpenaiApiVersion });
+  }
+  if (cfg.provider === 'ollama') {
+    return new OllamaProvider({ baseUrl: cfg.ollamaBaseUrl || 'http://localhost:11434', model: cfg.ollamaModel || 'qwen2.5:7b' });
+  }
+  return new DeterministicProvider();
 }
 
 class OpenAIProvider {
@@ -102,6 +75,7 @@ class OpenAIProvider {
     this.model = model;
     this.id = 'openai';
   }
+
   async chat({ system, user, schema, maxTokens = 1500 }) {
     const body = {
       model: this.model,
@@ -110,24 +84,36 @@ class OpenAIProvider {
         { role: 'system', content: system },
         { role: 'user', content: user },
       ],
-      response_format: { type: 'json_schema', json_schema: { name: 'agent_response', schema: schema || AGENT_RESPONSE_SCHEMA, strict: true } },
+      response_format: { type: 'json_schema', json_schema: { name: 'agent_response', schema: schema || this._defaultSchema(), strict: true } },
     };
     const res = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${this.apiKey}` },
       body: JSON.stringify(body),
     });
-    if (!res.ok) {
-      return { ok: false, provider: this.id, error: `HTTP_${res.status}`, statusCode: res.status };
-    }
+    if (!res.ok) return { ok: false, provider: this.id, error: `HTTP_${res.status}`, statusCode: res.status };
     const data = await res.json();
     const content = data.choices?.[0]?.message?.content || '';
-    const tokens = {
-      prompt: data.usage?.prompt_tokens || 0,
-      completion: data.usage?.completion_tokens || 0,
-      total: data.usage?.total_tokens || 0,
-    };
+    const tokens = { prompt: data.usage?.prompt_tokens || 0, completion: data.usage?.completion_tokens || 0, total: data.usage?.total_tokens || 0 };
     return { ok: true, provider: this.id, model: this.model, content, tokens };
+  }
+
+  _defaultSchema() {
+    return {
+      type: 'object',
+      required: ['situation', 'evidence', 'hypotheses', 'confidence', 'recommendation', 'requiredAction', 'approvalRequirement', 'auditRef'],
+      properties: {
+        situation: { type: 'string' },
+        evidence: { type: 'array', items: { type: 'object' } },
+        hypotheses: { type: 'array', items: { type: 'object' } },
+        confidence: { type: 'number', minimum: 0, maximum: 1 },
+        recommendation: { type: 'string' },
+        requiredAction: { type: 'string' },
+        approvalRequirement: { type: 'string' },
+        auditRef: { type: 'string' },
+      },
+      additionalProperties: true,
+    };
   }
 }
 
@@ -140,6 +126,7 @@ class AzureOpenAIProvider {
     this.apiVersion = apiVersion;
     this.id = 'azure-openai';
   }
+
   async chat({ system, user, schema, maxTokens = 1500 }) {
     const url = `${this.endpoint}/openai/deployments/${this.deployment}/chat/completions?api-version=${this.apiVersion}`;
     const body = {
@@ -148,7 +135,7 @@ class AzureOpenAIProvider {
         { role: 'system', content: system },
         { role: 'user', content: user },
       ],
-      response_format: { type: 'json_schema', json_schema: { name: 'agent_response', schema: schema || AGENT_RESPONSE_SCHEMA, strict: true } },
+      response_format: { type: 'json_schema', json_schema: { name: 'agent_response', schema: schema || this._defaultSchema(), strict: true } },
     };
     const res = await fetch(url, {
       method: 'POST',
@@ -161,6 +148,24 @@ class AzureOpenAIProvider {
     const tokens = { prompt: data.usage?.prompt_tokens || 0, completion: data.usage?.completion_tokens || 0, total: data.usage?.total_tokens || 0 };
     return { ok: true, provider: this.id, model: this.deployment, content, tokens };
   }
+
+  _defaultSchema() {
+    return {
+      type: 'object',
+      required: ['situation', 'evidence', 'hypotheses', 'confidence', 'recommendation', 'requiredAction', 'approvalRequirement', 'auditRef'],
+      properties: {
+        situation: { type: 'string' },
+        evidence: { type: 'array', items: { type: 'object' } },
+        hypotheses: { type: 'array', items: { type: 'object' } },
+        confidence: { type: 'number', minimum: 0, maximum: 1 },
+        recommendation: { type: 'string' },
+        requiredAction: { type: 'string' },
+        approvalRequirement: { type: 'string' },
+        auditRef: { type: 'string' },
+      },
+      additionalProperties: true,
+    };
+  }
 }
 
 class OllamaProvider {
@@ -169,6 +174,7 @@ class OllamaProvider {
     this.model = model;
     this.id = 'ollama';
   }
+
   async chat({ system, user, schema, maxTokens = 1500 }) {
     const url = `${this.baseUrl}/api/chat`;
     const messages = [
@@ -213,6 +219,7 @@ class OllamaProvider {
       tokens: { prompt: promptTokens, completion: completionTokens, total: promptTokens + completionTokens },
     };
   }
+
   async ping() {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), 5000);
@@ -232,51 +239,31 @@ class OllamaProvider {
 
 function tryParseJson(s) {
   if (!s || typeof s !== 'string') return null;
-  try { return JSON.parse(s); } catch (_) {
-    // try to find a JSON object in the string
+  try { return JSON.parse(s); }
+  catch (_) {
     const m = s.match(/\{[\s\S]*\}/);
     if (m) { try { return JSON.parse(m[0]); } catch (_) {} }
     return null;
   }
 }
 
-function createProvider(cfg = {}) {
-  if (cfg.provider === 'openai' && cfg.openaiApiKey) return new OpenAIProvider({ apiKey: cfg.openaiApiKey, model: cfg.openaiModel });
-  if (cfg.provider === 'azure-openai' && cfg.azureOpenaiEndpoint && cfg.azureOpenaiKey && cfg.azureOpenaiDeployment) {
-    return new AzureOpenAIProvider({ endpoint: cfg.azureOpenaiEndpoint, apiKey: cfg.azureOpenaiKey, deployment: cfg.azureOpenaiDeployment, apiVersion: cfg.azureOpenaiApiVersion });
-  }
-  if (cfg.provider === 'ollama') {
-    return new OllamaProvider({ baseUrl: cfg.ollamaBaseUrl || 'http://localhost:11434', model: cfg.ollamaModel || 'qwen2.5:7b' });
-  }
-  return new DeterministicProvider();
+let budgetUsedValue = 0;
+
+function resetBudget() {
+  budgetUsedValue = 0;
 }
 
-async function chatWithBudget(provider, args, budget) {
-  _resetBudgetIfNewDay();
-  const daily = budget && Number.isFinite(budget.daily) ? budget.daily : Infinity;
-  if (_state.usedToday >= daily) {
-    const fallback = new DeterministicProvider();
-    const r = await fallback.chat(args);
-    r.fallback = 'budget';
-    return r;
-  }
-  const r = await provider.chat(args);
-  if (r.tokens?.total) _recordTokens(r.tokens.total);
-  return r;
+function budgetUsed() {
+  return budgetUsedValue;
 }
-
-function resetBudget() { _state = { usedToday: 0, day: new Date().toISOString().slice(0, 10) }; }
 
 module.exports = {
-  AGENT_RESPONSE_SCHEMA,
-  createProvider,
   DeterministicProvider,
   OpenAIProvider,
   AzureOpenAIProvider,
   OllamaProvider,
-  chatWithBudget,
-  budgetUsed,
-  resetBudget,
-  BudgetExceededError,
+  createProvider,
   tryParseJson,
+  resetBudget,
+  budgetUsed,
 };

@@ -13,6 +13,7 @@ const stationsDb = require('./db/stations');
 const alertsDb = require('./db/alerts');
 const MemoryStore = require('./memoryStore');
 const InfluxStore = require('./influxStore');
+const PostgresStore = require('./postgresStore');
 const { buildStations, classify } = require('./stations');
 const { ProviderRegistry, normalizeBase } = require('./services/providers/registry');
 const OpenMeteoProvider = require('./services/providers/openMeteo');
@@ -30,6 +31,7 @@ process.on('unhandledRejection', (reason) => {
 
 const ml = require('./services/ml');
 const quality = require('./services/quality');
+ml.setStore = ml.setStore || ((s) => { ml.store = s; });
 const architecture = require('./services/architecture');
 const maintenance = require('./services/maintenance');
 const reports = require('./services/reports');
@@ -70,11 +72,18 @@ const { loadState: loadOperationsState } = require('./db/operations');
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server, { cors: { origin: config.corsOrigin } });
+const corsOrigins = (config.corsOrigin || (isProd ? '' : '*')).split(',').map(o => o.trim()).filter(Boolean);
+const corsOrigin = corsOrigins.length === 1 ? corsOrigins[0] : corsOrigins;
+const io = new Server(server, { cors: { origin: corsOrigin } });
+app.use(cors({ origin: (origin, cb) => {
+  if (!origin || corsOrigins.includes('*') || corsOrigins.includes(origin)) return cb(null, origin);
+  return cb(new Error('Not allowed by CORS'));
+}}));
 eventBus.setIO(io);
 
 let store;
 if (config.influx.enabled) store = new InfluxStore(config.influx);
+else if (config.pg.enabled) store = new PostgresStore();
 else store = new MemoryStore();
 ml.setStore(store);
 
@@ -129,16 +138,15 @@ const providerRegistry = new ProviderRegistry({
   mode: config.provider.mode,
 });
 providerRegistry.register(new OpenMeteoProvider());
-const openWeather = new OpenWeatherProvider({ apiKey: config.provider.openWeatherApiKey });
-if (config.provider.openWeatherApiKey) openWeather.setApiKey(config.provider.openWeatherApiKey);
-providerRegistry.register(openWeather);
-
-// Sync provider config from environment to operations module at startup
 if (config.provider.openWeatherApiKey) {
-  try {
-    operations.saveProvider('openweather', { enabled: true, credentials: { apiKey: config.provider.openWeatherApiKey } });
-  } catch (_) {}
-}
+    const openWeather = new OpenWeatherProvider({ apiKey: config.provider.openWeatherApiKey });
+    openWeather.setApiKey(config.provider.openWeatherApiKey);
+    providerRegistry.register(openWeather);
+    // Sync provider config from environment to operations module at startup
+    try {
+      operations.saveProvider('openweather', { enabled: true, credentials: { apiKey: config.provider.openWeatherApiKey } });
+    } catch (_) {}
+  }
 
 // LLM provider for AI Assistant
 let llmProvider = null;
@@ -179,7 +187,6 @@ const monitoring = new MonitoringLoop({
   store,
 }, io);
 
-app.use(cors({ origin: config.corsOrigin }));
 app.use(express.json({ limit: '128kb' }));
 app.use(require('./middleware/auth').requestId);
 app.use((err, req, res, next) => {
@@ -2201,8 +2208,14 @@ app.get('/', (req, res) => {
   // This allows the frontend to work when backend runs on any port
   const apiBase = `${req.protocol}://${req.get('host')}`;
   html = html.replace(
-    "window.SKYGUARD_API_BASE = 'http://localhost:4000';",
-    `window.SKYGUARD_API_BASE = '${apiBase}';`
+    "'http://localhost:4000'",
+    `'${apiBase}'`
+  );
+  // Inject demo mode flag so the frontend knows to suppress auth headers
+  const demoFlag = config.demoMode ? `\n  window.SKYGUARD_DEMO_MODE = true;` : '';
+  html = html.replace(
+    "// Set the backend API base URL for the frontend",
+    `// Set the backend API base URL for the frontend${demoFlag}`
   );
   res.type('html').set('Content-Length', Buffer.byteLength(html)).end(html);
 });

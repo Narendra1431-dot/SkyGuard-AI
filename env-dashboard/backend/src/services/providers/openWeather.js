@@ -3,12 +3,22 @@
 const AIR_POLLUTION_URL = 'https://api.openweathermap.org/data/2.5/air_pollution';
 
 class OpenWeatherProvider {
-  constructor() {
-    this.apiKey = null;
+  constructor({ apiKey = null } = {}) {
+    this.id = 'openweather';
+    this.name = 'OpenWeather';
+    this.enabled = true;
+    this.requiresKey = true;
     this.hasKey = false;
-    this.enabled = false;
+    this.apiKey = apiKey;
+    this.priority = 2;
+    this.baseUrl = 'https://api.openweathermap.org/data/2.5/weather';
+    this.airPollutionUrl = AIR_POLLUTION_URL;
     this._aqiCache = new Map();
     this._aqiCacheTtlMs = 60_000;
+    if (apiKey) {
+      this.hasKey = true;
+      this.enabled = true;
+    }
   }
 
   setApiKey(key) {
@@ -19,16 +29,16 @@ class OpenWeatherProvider {
 
   buildRequest(station) {
     if (!this.apiKey) throw new Error('OpenWeather apiKey not configured');
-    const url = `${this.baseUrl}?lat=${encodeURIComponent(station.lat)}&lon=${encodeURIComponent(station.lon)}&appid=${encodeURIComponent(this.apiKey)}&units=metric`;
+    const url = `${this.baseUrl}?lat=${encodeURIComponent(station.lat)}&lon=${encodeURIComponent(station.lon)}&appid=${encodeURIComponent(this.apiKey)}&units=metric&exclude=minutely,hourly,daily,alerts`;
     return { url, headers: { 'User-Agent': 'SkyGuard-AI/1.0', 'Accept': 'application/json' } };
   }
 
-  async fetchAirPollution(station) {
+  async fetchAirQuality(station) {
     if (!this.apiKey) return null;
     const cacheKey = `${station.lat},${station.lon}`;
     const cached = this._aqiCache.get(cacheKey);
     if (cached && Date.now() - cached.ts < this._aqiCacheTtlMs) return cached.value;
-    const url = `${AIR_POLLUTION_URL}?lat=${encodeURIComponent(station.lat)}&lon=${encodeURIComponent(station.lon)}&appid=${encodeURIComponent(this.apiKey)}`;
+    const url = `${this.airPollutionUrl}?lat=${encodeURIComponent(station.lat)}&lon=${encodeURIComponent(station.lon)}&appid=${encodeURIComponent(this.apiKey)}`;
     let aqi = null;
     try {
       const res = await fetch(url, { signal: AbortSignal.timeout(5000) });
@@ -41,6 +51,10 @@ class OpenWeatherProvider {
     } catch (_) {}
     this._aqiCache.set(cacheKey, { value: aqi, ts: Date.now() });
     return aqi;
+  }
+
+  async fetchAirPollution(station) {
+    return this.fetchAirQuality(station);
   }
 
   parse(station, body) {
@@ -68,7 +82,7 @@ class OpenWeatherProvider {
     };
   }
 
-  parseAirPollution(station, body) {
+  parseAirQuality(station, body) {
     // CORRECTED: Use the actual AQI response structure - list[0].main.aqi
     // This is the Air Pollution API response, not the standard weather endpoint
     if (!body || !Array.isArray(body.list) || !body.list[0]) return null;

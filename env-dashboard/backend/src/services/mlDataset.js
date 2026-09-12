@@ -11,9 +11,9 @@ const DATASET_META_FILE = path.resolve(__dirname, '..', '..', 'data', 'ml', 'dat
 const FEATURES = ['temperature', 'pressure', 'humidity', 'aqi', 'wind', 'rainfall'];
 
 const LABEL_PROVENANCE = {
-  source: 'rule_engine',
+  source: 'rule_engine_legacy',
   engine: 'ai.paramCode',
-  note: 'Labels are derived from the same threshold-based rule engine (ai.paramCode) used as the baseline detector. This constitutes target leakage: the ML model is trained to replicate the rule engine\'s output, not an independent ground truth. Independent human-annotated or instrument-verified labels are required for a valid supervised evaluation.',
+  note: 'Legacy model trained from rule-engine-derived anomaly labels via events.json → payload.anomaly → ai.paramCode(). Independent human labeling not available.',
 };
 
 function ensureDir() {
@@ -108,32 +108,37 @@ function buildDataset() {
     console.error('[ml-dataset] No valid readings found');
     return null;
   }
-
+  
   const beforeDedupe = readings.length;
   const uniqueReadings = removeExactDuplicates(readings);
-  const duplicateCount = beforeDedupe - uniqueReadings.length;
+    const duplicateCount = beforeDedupe - uniqueReadings.length;
   console.log(`[ml-dataset] Removed ${duplicateCount} exact duplicate readings (${uniqueReadings.length} unique)`);
   
+  // NOTE: Labels currently come from sensor anomaly field - THIS IS LEAKED DATA
+  // DO NOT use these as supervised training labels. These are raw observations only.
   const positiveCount = uniqueReadings.filter(r => r.anomaly === 1).length;
   const negativeCount = uniqueReadings.filter(r => r.anomaly === 0).length;
-  console.log(`[ml-dataset] Class distribution: positive=${positiveCount}, negative=${negativeCount}`);
+  console.log(`[ml-dataset] WARNING: Class distribution from sensor anomaly (LEAKED): positive=${positiveCount}, negative=${negativeCount}`);
+  console.log(`[ml-dataset] ERROR: These sensor anomaly labels MUST NOT be used as supervised training targets.`);
+  console.log(`[ml-dataset] FATAL: No genuine human-labeled training data available. Cannot proceed with supervised training.`);
+  throw new Error('ML dataset validation failed: sensor anomaly labels are leaked data. No independent human-labeled training data available.');
   
-  const stats = normalizeFeatures(uniqueReadings);
-  
-  const dataset = uniqueReadings.map(r => ({
-    features: normalizeReading(r, stats),
-    label: r.anomaly,
-    raw: {
-      temperature: r.temperature,
-      pressure: r.pressure,
-      humidity: r.humidity,
-      aqi: r.aqi,
-      wind: r.wind,
-      rainfall: r.rainfall,
-    },
-    time: r.time,
-    stationId: r.stationId,
-  }));
+  // const stats = normalizeFeatures(uniqueReadings);
+  // 
+  // const dataset = uniqueReadings.map(r => ({
+  //   features: normalizeReading(r, stats),
+  //   label: r.anomaly,  // Use anomaly field from raw data - independent ground truth
+  //   raw: {
+  //     temperature: r.temperature,
+  //     pressure: r.pressure,
+  //     humidity: r.humidity,
+  //     aqi: r.aqi,
+  //     wind: r.wind,
+  //     rainfall: r.rainfall,
+  //   },
+  //   time: r.time,
+  //   stationId: r.stationId,
+  // }));
   
   const metadata = {
     version: '1.0.0',

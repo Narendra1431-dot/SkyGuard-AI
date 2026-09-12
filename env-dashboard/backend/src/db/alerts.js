@@ -8,7 +8,6 @@ const RUNTIME_CACHE_LIMIT = 500;
 const memStore = new Proxy({}, {
   get(_t, _k) { return getMap('alerts_runtime'); },
 });
-
 const alertsArchive = new Proxy({}, {
   get(_t, _k) { return getMap('alerts_archive'); },
 });
@@ -43,7 +42,7 @@ async function insertAlert(a) {
           a.timestamp || new Date().toISOString(),
         ]
       );
-    } catch (_) { /* ignore */ }
+    } catch (_) { }
   }
 }
 
@@ -102,7 +101,7 @@ async function listAlerts(opts = {}) {
         params
       );
       if (r.rows.length) return r.rows;
-    } catch (_) { /* fall through */ }
+    } catch (_) { }
   }
   const memKeys = new Set(memStore.alerts.keys());
   const archiveKeys = new Set(alertsArchive.alerts.keys());
@@ -133,7 +132,7 @@ async function getAlert(id) {
         [id]
       );
       if (r.rows[0]) return r.rows[0];
-    } catch (_) { /* fall through */ }
+    } catch (_) { }
   }
   const a = memStore.alerts.get(id) || alertsArchive.alerts.get(id);
   return a ? shape(a) : null;
@@ -216,7 +215,7 @@ async function alertStats() {
         SELECT severity, COUNT(*)::int AS count FROM alerts
         WHERE resolved = FALSE GROUP BY severity`);
       return { ...r.rows[0], bySeverity: Object.fromEntries(sev.rows.map((s) => [s.severity, s.count])) };
-    } catch (_) { /* fall through */ }
+    } catch (_) { }
   }
   const all = getAllFromStore(memStore).concat(getAllFromStore(alertsArchive).filter(a => !memStore.alerts.get(a.id)));
   const unique = new Map();

@@ -1,0 +1,1554 @@
+TAP version 13
+# Subtest: fix-01: TOOL_REGISTRY advertises 44 tools (full coverage of all categories)
+ok 1 - fix-01: TOOL_REGISTRY advertises 44 tools (full coverage of all categories)
+  ---
+  duration_ms: 1.9784
+  type: 'test'
+  ...
+# Subtest: fix-01: every registered tool has a real handler
+ok 2 - fix-01: every registered tool has a real handler
+  ---
+  duration_ms: 0.31
+  type: 'test'
+  ...
+# Subtest: fix-01: handler counts match advertised counts
+ok 3 - fix-01: handler counts match advertised counts
+  ---
+  duration_ms: 0.2103
+  type: 'test'
+  ...
+# Subtest: fix-01: previously-unwired tools are now wired
+ok 4 - fix-01: previously-unwired tools are now wired
+  ---
+  duration_ms: 0.293
+  type: 'test'
+  ...
+# Subtest: fix-02: validateToolCall rejects unknown role
+ok 5 - fix-02: validateToolCall rejects unknown role
+  ---
+  duration_ms: 0.2478
+  type: 'test'
+  ...
+# Subtest: fix-02: validateToolCall rejects unauthorized read
+ok 6 - fix-02: validateToolCall rejects unauthorized read
+  ---
+  duration_ms: 0.1709
+  type: 'test'
+  ...
+# Subtest: fix-02: validateToolCall rejects unauthorized mutation
+ok 7 - fix-02: validateToolCall rejects unauthorized mutation
+  ---
+  duration_ms: 0.1201
+  type: 'test'
+  ...
+# Subtest: fix-02: validateToolCall accepts authorized mutation
+ok 8 - fix-02: validateToolCall accepts authorized mutation
+  ---
+  duration_ms: 0.1081
+  type: 'test'
+  ...
+# Subtest: fix-02: validateToolCall rejects invalid parameters
+ok 9 - fix-02: validateToolCall rejects invalid parameters
+  ---
+  duration_ms: 0.357
+  type: 'test'
+  ...
+# Subtest: fix-02: executeTool gates unauthorized mutation calls (handler never runs)
+ok 10 - fix-02: executeTool gates unauthorized mutation calls (handler never runs)
+  ---
+  duration_ms: 1.9273
+  type: 'test'
+  ...
+# Subtest: fix-02: executeTool gates authorized read calls (handler runs and returns result)
+ok 11 - fix-02: executeTool gates authorized read calls (handler runs and returns result)
+  ---
+  duration_ms: 1.1456
+  type: 'test'
+  ...
+# Subtest: fix-02: executeTool denies on bad role even for read tools
+ok 12 - fix-02: executeTool denies on bad role even for read tools
+  ---
+  duration_ms: 0.152
+  type: 'test'
+  ...
+# Subtest: fix-03: ApprovalGateway.propose creates a PENDING proposal
+ok 13 - fix-03: ApprovalGateway.propose creates a PENDING proposal
+  ---
+  duration_ms: 0.68
+  type: 'test'
+  ...
+# Subtest: fix-03: ApprovalGateway.propose creates AUTO_APPROVED for non-high-risk
+ok 14 - fix-03: ApprovalGateway.propose creates AUTO_APPROVED for non-high-risk
+  ---
+  duration_ms: 0.1786
+  type: 'test'
+  ...
+# Subtest: fix-03: ApprovalGateway.reject moves PENDING → REJECTED
+ok 15 - fix-03: ApprovalGateway.reject moves PENDING → REJECTED
+  ---
+  duration_ms: 0.224
+  type: 'test'
+  ...
+# Subtest: fix-03: ApprovalGateway.approve goes through every stage
+ok 16 - fix-03: ApprovalGateway.approve goes through every stage
+  ---
+  duration_ms: 0.596
+  type: 'test'
+  ...
+# Subtest: fix-03: ApprovalGateway.propose rejects unknown actions (allowlist enforced)
+ok 17 - fix-03: ApprovalGateway.propose rejects unknown actions (allowlist enforced)
+  ---
+  duration_ms: 0.4242
+  type: 'test'
+  ...
+# Subtest: fix-03: lastVerification is set when verify runs
+ok 18 - fix-03: lastVerification is set when verify runs
+  ---
+  duration_ms: 0.436
+  type: 'test'
+  ...
+# Subtest: fix-03: HIGH-risk mutations require admin role via ROLE_REQUIRED
+ok 19 - fix-03: HIGH-risk mutations require admin role via ROLE_REQUIRED
+  ---
+  duration_ms: 0.0889
+  type: 'test'
+  ...
+# Subtest: fix-04: RAGPipeline.retrieve returns provenance and mode
+ok 20 - fix-04: RAGPipeline.retrieve returns provenance and mode
+  ---
+  duration_ms: 18.1035
+  type: 'test'
+  ...
+# Subtest: fix-04: search_knowledge handler prefers RAGPipeline when available
+ok 21 - fix-04: search_knowledge handler prefers RAGPipeline when available
+  ---
+  duration_ms: 3.6713
+  type: 'test'
+  ...
+# Subtest: fix-04: search_knowledge falls back to lexical when RAG pipeline is absent
+ok 22 - fix-04: search_knowledge falls back to lexical when RAG pipeline is absent
+  ---
+  duration_ms: 4.3415
+  type: 'test'
+  ...
+# Subtest: fix-04: RAGPipeline honestly reports mode (degraded without OpenAI key)
+ok 23 - fix-04: RAGPipeline honestly reports mode (degraded without OpenAI key)
+  ---
+  duration_ms: 0.5443
+  type: 'test'
+  ...
+# Subtest: fix-05: AgentMemory investigations persist across AgentMemory instance (process-local)
+ok 24 - fix-05: AgentMemory investigations persist across AgentMemory instance (process-local)
+  ---
+  duration_ms: 0.7332
+  type: 'test'
+  ...
+# Subtest: fix-05: AgentMemory persistence survives a true process restart (child Node)
+ok 25 - fix-05: AgentMemory persistence survives a true process restart (child Node)
+  ---
+  duration_ms: 847.2567
+  type: 'test'
+  ...
+# Subtest: fix-05: AgentMemory.getSessionStats reports persistent backend
+ok 26 - fix-05: AgentMemory.getSessionStats reports persistent backend
+  ---
+  duration_ms: 0.7669
+  type: 'test'
+  ...
+# Subtest: fix-06: verifyAction for resolve_alert requires real state change
+ok 27 - fix-06: verifyAction for resolve_alert requires real state change
+  ---
+  duration_ms: 0.9098
+  type: 'test'
+  ...
+# Subtest: fix-06: verifyAction for acknowledge_alert requires acknowledged=true
+ok 28 - fix-06: verifyAction for acknowledge_alert requires acknowledged=true
+  ---
+  duration_ms: 0.1693
+  type: 'test'
+  ...
+# Subtest: fix-06: verifyAction for run_health_check requires readingFresh=true
+ok 29 - fix-06: verifyAction for run_health_check requires readingFresh=true
+  ---
+  duration_ms: 0.1886
+  type: 'test'
+  ...
+# Subtest: fix-06: verifyAction sets engine.lastVerification
+ok 30 - fix-06: verifyAction sets engine.lastVerification
+  ---
+  duration_ms: 0.2412
+  type: 'test'
+  ...
+# Subtest: fix-07: agentGateway.js exports are not required by server.js
+ok 31 - fix-07: agentGateway.js exports are not required by server.js
+  ---
+  duration_ms: 1.0573
+  type: 'test'
+  ...
+# Subtest: fix-07: dead endpoint /api/v1/verification/last returns real last verification
+ok 32 - fix-07: dead endpoint /api/v1/verification/last returns real last verification
+  ---
+  duration_ms: 0.3493
+  type: 'test'
+  ...
+# Subtest: fix-07: duplicate validateToolCall is removed
+ok 33 - fix-07: duplicate validateToolCall is removed
+  ---
+  duration_ms: 0.5293
+  type: 'test'
+  ...
+# Subtest: fix-08: every tool can be invoked end-to-end (smoke)
+ok 34 - fix-08: every tool can be invoked end-to-end (smoke)
+  ---
+  duration_ms: 3.0382
+  type: 'test'
+  ...
+# Subtest: fix-09: every TOOL_REGISTRY entry resolves through toolGateway.executeTool
+ok 35 - fix-09: every TOOL_REGISTRY entry resolves through toolGateway.executeTool
+  ---
+  duration_ms: 0.2216
+  type: 'test'
+  ...
+# Subtest: fix-10: executeTool denies every mutation for viewer role
+ok 36 - fix-10: executeTool denies every mutation for viewer role
+  ---
+  duration_ms: 0.2796
+  type: 'test'
+  ...
+# Subtest: fix-10: every mutation handler returns envelope with verified boolean
+ok 37 - fix-10: every mutation handler returns envelope with verified boolean
+  ---
+  duration_ms: 0.2786
+  type: 'test'
+  ...
+# Subtest: fix-11: supervisor proposals route through ApprovalGateway
+ok 38 - fix-11: supervisor proposals route through ApprovalGateway
+  ---
+  duration_ms: 4.2421
+  type: 'test'
+  ...
+# Subtest: fix-12: end-to-end approve flow with non-tautological verify
+ok 39 - fix-12: end-to-end approve flow with non-tautological verify
+  ---
+  duration_ms: 0.5244
+  type: 'test'
+  ...
+# All Agent + RAG tests passed!
+# Subtest: stateSnapshot: createSnapshot returns normalized snapshot
+not ok 40 - stateSnapshot: createSnapshot returns normalized snapshot
+  ---
+  duration_ms: 63.6587
+  type: 'test'
+  location: 'E:\\demo video\\env-dashboard\\backend\\test\\agent-rag.test.js:20:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    'YELLOW' !== 'GREEN'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'GREEN'
+  actual: 'YELLOW'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (E:\demo video\env-dashboard\backend\test\agent-rag.test.js:42:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+  ...
+# Subtest: stateSnapshot: diffSnapshots detects NEW and CHANGED
+ok 41 - stateSnapshot: diffSnapshots detects NEW and CHANGED
+  ---
+  duration_ms: 0.8534
+  type: 'test'
+  ...
+# Subtest: stateSnapshot: diffSnapshots detects RECOVERED
+ok 42 - stateSnapshot: diffSnapshots detects RECOVERED
+  ---
+  duration_ms: 0.5273
+  type: 'test'
+  ...
+# Subtest: eventDetector: detectEvents finds critical AQI
+ok 43 - eventDetector: detectEvents finds critical AQI
+  ---
+  duration_ms: 1.0008
+  type: 'test'
+  ...
+# Subtest: eventDetector: detectEvents finds critical temperature
+ok 44 - eventDetector: detectEvents finds critical temperature
+  ---
+  duration_ms: 0.4288
+  type: 'test'
+  ...
+# Subtest: eventDetector: detectEvents finds critical humidity
+ok 45 - eventDetector: detectEvents finds critical humidity
+  ---
+  duration_ms: 0.3361
+  type: 'test'
+  ...
+# Subtest: eventDetector: detectEvents finds correlated anomalies
+ok 46 - eventDetector: detectEvents finds correlated anomalies
+  ---
+  duration_ms: 0.6715
+  type: 'test'
+  ...
+# Subtest: eventDetector: detectEvents finds spatially isolated critical anomaly
+ok 47 - eventDetector: detectEvents finds spatially isolated critical anomaly
+  ---
+  duration_ms: 0.4649
+  type: 'test'
+  ...
+# Subtest: eventDetector: routeEvent assigns AGENT_INVESTIGATE for CRITICAL
+ok 48 - eventDetector: routeEvent assigns AGENT_INVESTIGATE for CRITICAL
+  ---
+  duration_ms: 0.4178
+  type: 'test'
+  ...
+# Subtest: eventDetector: routeEvent assigns AGENT_INVESTIGATE for HIGH
+ok 49 - eventDetector: routeEvent assigns AGENT_INVESTIGATE for HIGH
+  ---
+  duration_ms: 0.4821
+  type: 'test'
+  ...
+# Subtest: eventDetector: routeEvent assigns LOG for INFO
+ok 50 - eventDetector: routeEvent assigns LOG for INFO
+  ---
+  duration_ms: 0.2806
+  type: 'test'
+  ...
+# Subtest: eventDetector: detectRecoveries detects station health recovery
+ok 51 - eventDetector: detectRecoveries detects station health recovery
+  ---
+  duration_ms: 0.5121
+  type: 'test'
+  ...
+# Subtest: eventDetector: EVENT_RULES includes all required categories
+ok 52 - eventDetector: EVENT_RULES includes all required categories
+  ---
+  duration_ms: 0.1489
+  type: 'test'
+  ...
+# Subtest: toolGateway: TOOL_REGISTRY has all categories
+ok 53 - toolGateway: TOOL_REGISTRY has all categories
+  ---
+  duration_ms: 0.1156
+  type: 'test'
+  ...
+# Subtest: toolGateway: getTool returns correct metadata
+ok 54 - toolGateway: getTool returns correct metadata
+  ---
+  duration_ms: 0.0959
+  type: 'test'
+  ...
+# Subtest: toolGateway: validateToolCall rejects unknown tools
+ok 55 - toolGateway: validateToolCall rejects unknown tools
+  ---
+  duration_ms: 0.1753
+  type: 'test'
+  ...
+# Subtest: toolGateway: validateToolCall allows viewer for read-only
+ok 56 - toolGateway: validateToolCall allows viewer for read-only
+  ---
+  duration_ms: 0.1013
+  type: 'test'
+  ...
+# Subtest: toolGateway: mutation tools require higher permission
+ok 57 - toolGateway: mutation tools require higher permission
+  ---
+  duration_ms: 0.0845
+  type: 'test'
+  ...
+# Subtest: toolGateway: getToolsByCategory returns correct tools
+ok 58 - toolGateway: getToolsByCategory returns correct tools
+  ---
+  duration_ms: 0.1294
+  type: 'test'
+  ...
+# Subtest: toolGateway: getReadOnlyTools returns only read-only tools
+ok 59 - toolGateway: getReadOnlyTools returns only read-only tools
+  ---
+  duration_ms: 0.1112
+  type: 'test'
+  ...
+# Subtest: toolGateway: getMutationTools returns only mutation tools
+ok 60 - toolGateway: getMutationTools returns only mutation tools
+  ---
+  duration_ms: 0.1168
+  type: 'test'
+  ...
+# Subtest: toolGateway: getToolsByRisk returns tools by risk level
+ok 61 - toolGateway: getToolsByRisk returns tools by risk level
+  ---
+  duration_ms: 0.1119
+  type: 'test'
+  ...
+# Subtest: toolGateway: getToolsNeedingApproval returns high-risk tools
+ok 62 - toolGateway: getToolsNeedingApproval returns high-risk tools
+  ---
+  duration_ms: 0.1151
+  type: 'test'
+  ...
+# Subtest: toolGateway: critical risk tools require admin permission
+ok 63 - toolGateway: critical risk tools require admin permission
+  ---
+  duration_ms: 0.0812
+  type: 'test'
+  ...
+# Subtest: agentSupervisor: createInvestigationPlan generates steps
+ok 64 - agentSupervisor: createInvestigationPlan generates steps
+  ---
+  duration_ms: 0.5384
+  type: 'test'
+  ...
+# Subtest: agentSupervisor: calculateConfidence returns INSUFFICIENT for empty evidence
+ok 65 - agentSupervisor: calculateConfidence returns INSUFFICIENT for empty evidence
+  ---
+  duration_ms: 0.249
+  type: 'test'
+  ...
+# Subtest: agentSupervisor: calculateConfidence includes spatial evidence
+ok 66 - agentSupervisor: calculateConfidence includes spatial evidence
+  ---
+  duration_ms: 0.1685
+  type: 'test'
+  ...
+# Subtest: agentSupervisor: buildToolContext implements all registered tools
+ok 67 - agentSupervisor: buildToolContext implements all registered tools
+  ---
+  duration_ms: 0.2183
+  type: 'test'
+  ...
+# Subtest: agentSupervisor: assessRootCause identifies threshold breach
+ok 68 - agentSupervisor: assessRootCause identifies threshold breach
+  ---
+  duration_ms: 0.2633
+  type: 'test'
+  ...
+# Subtest: agentSupervisor: generateRecommendations returns correct recommendations
+ok 69 - agentSupervisor: generateRecommendations returns correct recommendations
+  ---
+  duration_ms: 0.2457
+  type: 'test'
+  ...
+# Subtest: agentSupervisor: buildActionProposals creates health check proposal for anomaly
+ok 70 - agentSupervisor: buildActionProposals creates health check proposal for anomaly
+  ---
+  duration_ms: 0.2261
+  type: 'test'
+  ...
+# Subtest: agentSupervisor: buildActionProposals creates report proposal for maintenance risk
+ok 71 - agentSupervisor: buildActionProposals creates report proposal for maintenance risk
+  ---
+  duration_ms: 0.1529
+  type: 'test'
+  ...
+# Subtest: agentSupervisor: buildActionProposals creates test_provider proposal for provider failure
+ok 72 - agentSupervisor: buildActionProposals creates test_provider proposal for provider failure
+  ---
+  duration_ms: 0.2185
+  type: 'test'
+  ...
+# Subtest: agentSupervisor: createInvestigationPlan generates steps
+ok 73 - agentSupervisor: createInvestigationPlan generates steps
+  ---
+  duration_ms: 0.2108
+  type: 'test'
+  ...
+# Subtest: agentSupervisor: calculateConfidence returns INSUFFICIENT for empty evidence
+ok 74 - agentSupervisor: calculateConfidence returns INSUFFICIENT for empty evidence
+  ---
+  duration_ms: 0.1715
+  type: 'test'
+  ...
+# Subtest: ragPipeline: ingestDocument creates document
+ok 75 - ragPipeline: ingestDocument creates document
+  ---
+  duration_ms: 11.0197
+  type: 'test'
+  ...
+# Subtest: ragPipeline: search returns relevant results
+ok 76 - ragPipeline: search returns relevant results
+  ---
+  duration_ms: 4.9496
+  type: 'test'
+  ...
+# Subtest: ragPipeline: search returns empty for irrelevant query
+ok 77 - ragPipeline: search returns empty for irrelevant query
+  ---
+  duration_ms: 4.6978
+  type: 'test'
+  ...
+# Subtest: ragPipeline: getStats returns correct counts
+ok 78 - ragPipeline: getStats returns correct counts
+  ---
+  duration_ms: 3.7094
+  type: 'test'
+  ...
+# Subtest: approvalGateway: propose creates proposal
+ok 79 - approvalGateway: propose creates proposal
+  ---
+  duration_ms: 0.377
+  type: 'test'
+  ...
+# Subtest: approvalGateway: approve resolves proposal
+ok 80 - approvalGateway: approve resolves proposal
+  ---
+  duration_ms: 0.4816
+  type: 'test'
+  ...
+# Subtest: approvalGateway: reject proposal
+ok 81 - approvalGateway: reject proposal
+  ---
+  duration_ms: 0.214
+  type: 'test'
+  ...
+# Subtest: approvalGateway: requiresApproval returns true for high-risk
+ok 82 - approvalGateway: requiresApproval returns true for high-risk
+  ---
+  duration_ms: 0.0961
+  type: 'test'
+  ...
+# Subtest: verificationEngine: verifyAction returns success for acknowledge
+ok 83 - verificationEngine: verifyAction returns success for acknowledge
+  ---
+  duration_ms: 0.5474
+  type: 'test'
+  ...
+# Subtest: verificationEngine: verifyAction returns false for non-existent alert
+ok 84 - verificationEngine: verifyAction returns false for non-existent alert
+  ---
+  duration_ms: 0.1722
+  type: 'test'
+  ...
+# Subtest: agentMemory: createSession and addEvent
+ok 85 - agentMemory: createSession and addEvent
+  ---
+  duration_ms: 0.2206
+  type: 'test'
+  ...
+# Subtest: agentMemory: createInvestigationMemory and addEvidence
+ok 86 - agentMemory: createInvestigationMemory and addEvidence
+  ---
+  duration_ms: 0.4045
+  type: 'test'
+  ...
+# Subtest: agentMemory: getSessionStats
+ok 87 - agentMemory: getSessionStats
+  ---
+  duration_ms: 0.4174
+  type: 'test'
+  ...
+# Subtest: monitoringLoop: constructor initializes correctly
+ok 88 - monitoringLoop: constructor initializes correctly
+  ---
+  duration_ms: 0.5949
+  type: 'test'
+  ...
+# Subtest: monitoringLoop: getStatus returns correct structure
+ok 89 - monitoringLoop: getStatus returns correct structure
+  ---
+  duration_ms: 0.5589
+  type: 'test'
+  ...
+# Subtest: monitoringLoop: getEvents filters by category and severity
+ok 90 - monitoringLoop: getEvents filters by category and severity
+  ---
+  duration_ms: 0.471
+  type: 'test'
+  ...
+# Subtest: agent.llm: deterministic provider produces schema-valid output
+not ok 91 - agent.llm: deterministic provider produces schema-valid output
+  ---
+  duration_ms: 0.9266
+  type: 'test'
+  location: 'E:\\demo video\\env-dashboard\\backend\\test\\agent.llm.test.js:8:1'
+  failureType: 'testCodeFailure'
+  error: 'resetBudget is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (E:\demo video\env-dashboard\backend\test\agent.llm.test.js:9:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: agent.llm: schema-violating LLM output is captured, not thrown
+not ok 92 - agent.llm: schema-violating LLM output is captured, not thrown
+  ---
+  duration_ms: 0.2023
+  type: 'test'
+  location: 'E:\\demo video\\env-dashboard\\backend\\test\\agent.llm.test.js:25:1'
+  failureType: 'testCodeFailure'
+  error: 'resetBudget is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (E:\demo video\env-dashboard\backend\test\agent.llm.test.js:26:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: agent.llm: budget exceeded triggers deterministic fallback
+not ok 93 - agent.llm: budget exceeded triggers deterministic fallback
+  ---
+  duration_ms: 0.167
+  type: 'test'
+  location: 'E:\\demo video\\env-dashboard\\backend\\test\\agent.llm.test.js:41:1'
+  failureType: 'testCodeFailure'
+  error: 'resetBudget is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (E:\demo video\env-dashboard\backend\test\agent.llm.test.js:42:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: agent.llm: full investigation end-to-end with deterministic LLM
+not ok 94 - agent.llm: full investigation end-to-end with deterministic LLM
+  ---
+  duration_ms: 0.2163
+  type: 'test'
+  location: 'E:\\demo video\\env-dashboard\\backend\\test\\agent.llm.test.js:56:1'
+  failureType: 'testCodeFailure'
+  error: 'resetBudget is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (E:\demo video\env-dashboard\backend\test\agent.llm.test.js:57:3)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: trigger: 100 deterministic cycles with no significance change do not create investigations
+ok 95 - trigger: 100 deterministic cycles with no significance change do not create investigations
+  ---
+  duration_ms: 131.5866
+  type: 'test'
+  ...
+# Subtest: trigger: injected anomaly triggers exactly one task with station debounce
+ok 96 - trigger: injected anomaly triggers exactly one task with station debounce
+  ---
+  duration_ms: 217.7982
+  type: 'test'
+  ...
+# Subtest: safety: TOOL_REGISTRY does not expose any shell or file-mutation tools
+ok 97 - safety: TOOL_REGISTRY does not expose any shell or file-mutation tools
+  ---
+  duration_ms: 1.3819
+  type: 'test'
+  ...
+# Subtest: safety: tool registry marks every action tool with risk and approval metadata
+ok 98 - safety: tool registry marks every action tool with risk and approval metadata
+  ---
+  duration_ms: 0.3708
+  type: 'test'
+  ...
+# Subtest: safety: agentActions.ALLOWED only contains allowlisted actions
+ok 99 - safety: agentActions.ALLOWED only contains allowlisted actions
+  ---
+  duration_ms: 0.2385
+  type: 'test'
+  ...
+# All always-on loop tests passed!
+# Subtest: monitoring: rule-based events fire on critical AQI snapshot
+ok 100 - monitoring: rule-based events fire on critical AQI snapshot
+  ---
+  duration_ms: 8.9989
+  type: 'test'
+  ...
+# Subtest: monitoring: provider recovery is detected as INFO/recovery event
+ok 101 - monitoring: provider recovery is detected as INFO/recovery event
+  ---
+  duration_ms: 1.7373
+  type: 'test'
+  ...
+# Subtest: monitoring: station offline transition emits HIGH severity event
+ok 102 - monitoring: station offline transition emits HIGH severity event
+  ---
+  duration_ms: 1.0054
+  type: 'test'
+  ...
+# Subtest: monitoring: pipeline snapshot ingestion status is computed
+ok 103 - monitoring: pipeline snapshot ingestion status is computed
+  ---
+  duration_ms: 0.4691
+  type: 'test'
+  ...
+# Subtest: monitoring: pipeline snapshot ingestion status is GREEN when fresh
+ok 104 - monitoring: pipeline snapshot ingestion status is GREEN when fresh
+  ---
+  duration_ms: 0.6181
+  type: 'test'
+  ...
+# Subtest: monitoring: data quality YELLOW triggers WARNING event
+ok 105 - monitoring: data quality YELLOW triggers WARNING event
+  ---
+  duration_ms: 0.7382
+  type: 'test'
+  ...
+# Subtest: monitoring: cycle runs and emits cycle payload
+ok 106 - monitoring: cycle runs and emits cycle payload
+  ---
+  duration_ms: 12.5106
+  type: 'test'
+  ...
+# Subtest: monitoring: critical event triggers agent investigation task
+ok 107 - monitoring: critical event triggers agent investigation task
+  ---
+  duration_ms: 10474.3229
+  type: 'test'
+  ...
+# Subtest: monitoring: debounce avoids duplicate investigations
+ok 108 - monitoring: debounce avoids duplicate investigations
+  ---
+  duration_ms: 90.0424
+  type: 'test'
+  ...
+# Subtest: monitoring: buildBrief produces topRisks and recommendedActions
+ok 109 - monitoring: buildBrief produces topRisks and recommendedActions
+  ---
+  duration_ms: 14.4928
+  type: 'test'
+  ...
+# Subtest: agent: triggerInvestigation returns task with plan and runs tools
+ok 110 - agent: triggerInvestigation returns task with plan and runs tools
+  ---
+  duration_ms: 512.362
+  type: 'test'
+  ...
+# Subtest: agent: tools are validated through registry
+ok 111 - agent: tools are validated through registry
+  ---
+  duration_ms: 0.3341
+  type: 'test'
+  ...
+# Subtest: agent: action proposals require approval for high risk
+ok 112 - agent: action proposals require approval for high risk
+  ---
+  duration_ms: 0.3023
+  type: 'test'
+  ...
+# Subtest: rag: ingest + retrieve returns relevant source with source provenance
+ok 113 - rag: ingest + retrieve returns relevant source with source provenance
+  ---
+  duration_ms: 577.2482
+  type: 'test'
+  ...
+# Subtest: rag: reindex rebuilds chunk index
+ok 114 - rag: reindex rebuilds chunk index
+  ---
+  duration_ms: 15.4891
+  type: 'test'
+  ...
+# Subtest: rag: knowledge retrieval returns NO RELEVANT KNOWLEDGE when below threshold
+ok 115 - rag: knowledge retrieval returns NO RELEVANT KNOWLEDGE when below threshold
+  ---
+  duration_ms: 13.0677
+  type: 'test'
+  ...
+# Subtest: verification: acknowledge action returns success when alert state changes
+ok 116 - verification: acknowledge action returns success when alert state changes
+  ---
+  duration_ms: 1.9194
+  type: 'test'
+  ...
+# Subtest: agent-memory: investigation memory persists root cause + recommendations
+ok 117 - agent-memory: investigation memory persists root cause + recommendations
+  ---
+  duration_ms: 0.9964
+  type: 'test'
+  ...
+# Subtest: security: security: agent cannot run unknown mutation tool
+ok 118 - security: security: agent cannot run unknown mutation tool
+  ---
+  duration_ms: 0.31
+  type: 'test'
+  ...
+# Subtest: snapshot: snapshot retains ingestion history
+ok 119 - snapshot: snapshot retains ingestion history
+  ---
+  duration_ms: 1.1718
+  type: 'test'
+  ...
+# Subtest: agent: emit tool timeline during execution
+ok 120 - agent: emit tool timeline during execution
+  ---
+  duration_ms: 102.7126
+  type: 'test'
+  ...
+# [llm] provider=ollama model=qwen2.5:7b
+# request failed TypeError: keyFn is not a function
+#     at E:\\demo video\\env-dashboard\\backend\\src\\middleware\\auth.js:63:18
+#     at Layer.handle [as handle_request] (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)
+#     at next (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)
+#     at Route.dispatch (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\route.js:119:3)
+#     at Layer.handle [as handle_request] (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)
+#     at E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:284:15
+#     at Function.process_params (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)
+#     at next (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)
+#     at Function.handle (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:175:3)
+#     at router (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:47:12)
+# [PERF] arch checks 1 ms
+# [PERF] json size 1946 bytes
+# [PERF] json size 361 bytes
+# [PERF] stations handler 0 ms count= 6
+# [PERF] json size 7130 bytes
+# [PERF] json size 188 bytes
+# [PERF] json size 925 bytes
+# [PERF] json size 75 bytes
+# [PERF] json size 75 bytes
+# [PERF] arch checks 0 ms
+# [PERF] json size 3731 bytes
+# [PERF] arch checks 0 ms
+# [PERF] json size 1718 bytes
+# [PERF] arch checks 1 ms
+# [PERF] json size 1719 bytes
+# [PERF] arch checks 0 ms
+# [PERF] system/metrics handler 12 ms
+# [PERF] json size 179 bytes
+# [PERF] arch checks 1 ms
+# [PERF] json size 3505 bytes
+# [PERF] json size 117 bytes
+# [PERF] json size 2505 bytes
+# [PERF] json size 338 bytes
+# [PERF] json size 505 bytes
+# [PERF] json size 130 bytes
+# [PERF] json size 829 bytes
+# [PERF] json size 567 bytes
+# [PERF] json size 472 bytes
+# [PERF] json size 104 bytes
+# [PERF] json size 127 bytes
+# [PERF] json size 75 bytes
+# [PERF] json size 997 bytes
+# [PERF] json size 1846 bytes
+# [PERF] json size 84 bytes
+# [PERF] json size 3468 bytes
+# [PERF] json size 159 bytes
+# [PERF] json size 1218 bytes
+# [PERF] json size 229 bytes
+# request failed TypeError: keyFn is not a function
+#     at E:\\demo video\\env-dashboard\\backend\\src\\middleware\\auth.js:63:18
+#     at Layer.handle [as handle_request] (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)
+#     at next (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)
+#     at Route.dispatch (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\route.js:119:3)
+#     at Layer.handle [as handle_request] (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)
+#     at E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:284:15
+#     at Function.process_params (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)
+#     at next (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)
+#     at Function.handle (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:175:3)
+#     at router (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:47:12)
+# request failed TypeError: keyFn is not a function
+#     at E:\\demo video\\env-dashboard\\backend\\src\\middleware\\auth.js:63:18
+#     at Layer.handle [as handle_request] (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)
+#     at next (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)
+#     at Route.dispatch (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\route.js:119:3)
+#     at Layer.handle [as handle_request] (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)
+#     at E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:284:15
+#     at Function.process_params (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)
+#     at next (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)
+#     at Function.handle (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:175:3)
+#     at router (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:47:12)
+# request failed TypeError: keyFn is not a function
+#     at E:\\demo video\\env-dashboard\\backend\\src\\middleware\\auth.js:63:18
+#     at Layer.handle [as handle_request] (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)
+#     at next (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)
+#     at Route.dispatch (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\route.js:119:3)
+#     at Layer.handle [as handle_request] (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)
+#     at E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:284:15
+#     at Function.process_params (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)
+#     at next (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)
+#     at Function.handle (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:175:3)
+#     at router (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:47:12)
+# request failed TypeError: keyFn is not a function
+#     at E:\\demo video\\env-dashboard\\backend\\src\\middleware\\auth.js:63:18
+#     at Layer.handle [as handle_request] (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)
+#     at next (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)
+#     at Route.dispatch (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\route.js:119:3)
+#     at Layer.handle [as handle_request] (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)
+#     at E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:284:15
+#     at Function.process_params (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)
+#     at next (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)
+#     at Function.handle (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:175:3)
+#     at router (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:47:12)
+# request failed TypeError: keyFn is not a function
+#     at E:\\demo video\\env-dashboard\\backend\\src\\middleware\\auth.js:63:18
+#     at Layer.handle [as handle_request] (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)
+#     at next (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)
+#     at Route.dispatch (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\route.js:119:3)
+#     at Layer.handle [as handle_request] (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)
+#     at E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:284:15
+#     at Function.process_params (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)
+#     at next (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)
+#     at Function.handle (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:175:3)
+#     at router (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:47:12)
+# request failed TypeError: keyFn is not a function
+#     at E:\\demo video\\env-dashboard\\backend\\src\\middleware\\auth.js:63:18
+#     at Layer.handle [as handle_request] (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)
+#     at next (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)
+#     at Route.dispatch (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\route.js:119:3)
+#     at Layer.handle [as handle_request] (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)
+#     at E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:284:15
+#     at Function.process_params (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)
+#     at next (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)
+#     at Function.handle (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:175:3)
+#     at router (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:47:12)
+# [auth] seeded in-memory admin user: admin_secure_user_2026
+# Subtest: auth: login + me + bad password + missing user
+not ok 121 - auth: login + me + bad password + missing user
+  ---
+  duration_ms: 271.5127
+  type: 'test'
+  location: 'E:\\demo video\\env-dashboard\\backend\\test\\api.test.js:29:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    500 !== 200
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 500
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (E:\demo video\env-dashboard\backend\test\api.test.js:31:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: public read endpoints return expected shapes
+ok 122 - public read endpoints return expected shapes
+  ---
+  duration_ms: 13960.9108
+  type: 'test'
+  ...
+# Subtest: readings endpoint supports stationId + minutes
+ok 123 - readings endpoint supports stationId + minutes
+  ---
+  duration_ms: 25.6106
+  type: 'test'
+  ...
+# Subtest: history endpoint supports field selection and 404 for unknown station
+ok 124 - history endpoint supports field selection and 404 for unknown station
+  ---
+  duration_ms: 34.8359
+  type: 'test'
+  ...
+# Subtest: provider CRUD requires auth and supports create/update/delete/test
+not ok 125 - provider CRUD requires auth and supports create/update/delete/test
+  ---
+  duration_ms: 14.8178
+  type: 'test'
+  location: 'E:\\demo video\\env-dashboard\\backend\\test\\api.test.js:72:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    500 !== 200
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 500
+  operator: 'strictEqual'
+  stack: |-
+    login (E:\demo video\env-dashboard\backend\test\api.test.js:25:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async TestContext.<anonymous> (E:\demo video\env-dashboard\backend\test\api.test.js:73:17)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: config + thresholds: save persists and audit entry is recorded
+not ok 126 - config + thresholds: save persists and audit entry is recorded
+  ---
+  duration_ms: 11.7224
+  type: 'test'
+  location: 'E:\\demo video\\env-dashboard\\backend\\test\\api.test.js:105:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    500 !== 200
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 500
+  operator: 'strictEqual'
+  stack: |-
+    login (E:\demo video\env-dashboard\backend\test\api.test.js:25:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async TestContext.<anonymous> (E:\demo video\env-dashboard\backend\test\api.test.js:106:17)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: alerts: list + stats + acknowledge + resolve + reopen + escalate + mute + retry
+not ok 127 - alerts: list + stats + acknowledge + resolve + reopen + escalate + mute + retry
+  ---
+  duration_ms: 13.4684
+  type: 'test'
+  location: 'E:\\demo video\\env-dashboard\\backend\\test\\api.test.js:122:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    500 !== 200
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 500
+  operator: 'strictEqual'
+  stack: |-
+    login (E:\demo video\env-dashboard\backend\test\api.test.js:25:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async TestContext.<anonymous> (E:\demo video\env-dashboard\backend\test\api.test.js:123:17)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: reports: generate + list + get + download + delete
+not ok 128 - reports: generate + list + get + download + delete
+  ---
+  duration_ms: 15.033
+  type: 'test'
+  location: 'E:\\demo video\\env-dashboard\\backend\\test\\api.test.js:153:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    500 !== 200
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 500
+  operator: 'strictEqual'
+  stack: |-
+    login (E:\demo video\env-dashboard\backend\test\api.test.js:25:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async TestContext.<anonymous> (E:\demo video\env-dashboard\backend\test\api.test.js:154:17)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: ml: validate + retrain + run history
+not ok 129 - ml: validate + retrain + run history
+  ---
+  duration_ms: 26.2148
+  type: 'test'
+  location: 'E:\\demo video\\env-dashboard\\backend\\test\\api.test.js:175:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    500 !== 200
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 500
+  operator: 'strictEqual'
+  stack: |-
+    login (E:\demo video\env-dashboard\backend\test\api.test.js:25:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async TestContext.<anonymous> (E:\demo video\env-dashboard\backend\test\api.test.js:177:17)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: ml truthfulness: status endpoint reports UNVERIFIED without independent eval data
+not ok 130 - ml truthfulness: status endpoint reports UNVERIFIED without independent eval data
+  ---
+  duration_ms: 20.1039
+  type: 'test'
+  location: 'E:\\demo video\\env-dashboard\\backend\\test\\api.test.js:190:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    500 !== 200
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 500
+  operator: 'strictEqual'
+  stack: |-
+    login (E:\demo video\env-dashboard\backend\test\api.test.js:25:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async TestContext.<anonymous> (E:\demo video\env-dashboard\backend\test\api.test.js:192:17)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# [PERF] json size 2500 bytes
+# Subtest: assistant truthfulness: v2 response includes truthful LLM status
+not ok 131 - assistant truthfulness: v2 response includes truthful LLM status
+  ---
+  duration_ms: 166674.2794
+  type: 'test'
+  location: 'E:\\demo video\\env-dashboard\\backend\\test\\api.test.js:203:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    no real LLM configured => unavailable
+    + actual - expected
+    
+    + 'real_llm'
+    - 'unavailable'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'unavailable'
+  actual: 'real_llm'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (E:\demo video\env-dashboard\backend\test\api.test.js:208:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# [PERF] json size 117 bytes
+# [PERF] json size 105 bytes
+# Subtest: maintenance: list + per-station history
+ok 132 - maintenance: list + per-station history
+  ---
+  duration_ms: 22921.9301
+  type: 'test'
+  ...
+# [PERF] json size 223 bytes
+# Subtest: assistant: returns structured reply
+ok 133 - assistant: returns structured reply
+  ---
+  duration_ms: 316.0206
+  type: 'test'
+  ...
+# Subtest: socket.io: connection emits system:update
+ok 134 - socket.io: connection emits system:update
+  ---
+  duration_ms: 272.4528
+  type: 'test'
+  ...
+# request failed TypeError: keyFn is not a function
+#     at E:\\demo video\\env-dashboard\\backend\\src\\middleware\\auth.js:63:18
+#     at Layer.handle [as handle_request] (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)
+#     at next (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)
+#     at Route.dispatch (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\route.js:119:3)
+#     at Layer.handle [as handle_request] (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)
+#     at E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:284:15
+#     at Function.process_params (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)
+#     at next (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)
+#     at Function.handle (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:175:3)
+#     at router (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:47:12)
+# Subtest: notifications: adapter status is GRAY when configured but not tested
+not ok 135 - notifications: adapter status is GRAY when configured but not tested
+  ---
+  duration_ms: 23.6807
+  type: 'test'
+  location: 'E:\\demo video\\env-dashboard\\backend\\test\\api.test.js:242:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    500 !== 200
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 500
+  operator: 'strictEqual'
+  stack: |-
+    login (E:\demo video\env-dashboard\backend\test\api.test.js:25:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async TestContext.<anonymous> (E:\demo video\env-dashboard\backend\test\api.test.js:243:17)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# request failed TypeError: keyFn is not a function
+#     at E:\\demo video\\env-dashboard\\backend\\src\\middleware\\auth.js:63:18
+#     at Layer.handle [as handle_request] (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)
+#     at next (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)
+#     at Route.dispatch (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\route.js:119:3)
+#     at Layer.handle [as handle_request] (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)
+#     at E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:284:15
+#     at Function.process_params (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)
+#     at next (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)
+#     at Function.handle (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:175:3)
+#     at router (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:47:12)
+# Subtest: notifications: unconfigured channel shows NOT_CONFIGURED (GRAY)
+not ok 136 - notifications: unconfigured channel shows NOT_CONFIGURED (GRAY)
+  ---
+  duration_ms: 31.0327
+  type: 'test'
+  location: 'E:\\demo video\\env-dashboard\\backend\\test\\api.test.js:259:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    500 !== 200
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 500
+  operator: 'strictEqual'
+  stack: |-
+    login (E:\demo video\env-dashboard\backend\test\api.test.js:25:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async TestContext.<anonymous> (E:\demo video\env-dashboard\backend\test\api.test.js:260:17)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# request failed TypeError: keyFn is not a function
+#     at E:\\demo video\\env-dashboard\\backend\\src\\middleware\\auth.js:63:18
+#     at Layer.handle [as handle_request] (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)
+#     at next (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)
+#     at Route.dispatch (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\route.js:119:3)
+#     at Layer.handle [as handle_request] (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)
+#     at E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:284:15
+#     at Function.process_params (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)
+#     at next (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)
+#     at Function.handle (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:175:3)
+#     at router (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:47:12)
+# Subtest: notifications: delivery history is persisted and queryable
+not ok 137 - notifications: delivery history is persisted and queryable
+  ---
+  duration_ms: 22.3151
+  type: 'test'
+  location: 'E:\\demo video\\env-dashboard\\backend\\test\\api.test.js:268:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    500 !== 200
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 500
+  operator: 'strictEqual'
+  stack: |-
+    login (E:\demo video\env-dashboard\backend\test\api.test.js:25:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async TestContext.<anonymous> (E:\demo video\env-dashboard\backend\test\api.test.js:269:17)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# request failed TypeError: keyFn is not a function
+#     at E:\\demo video\\env-dashboard\\backend\\src\\middleware\\auth.js:63:18
+#     at Layer.handle [as handle_request] (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)
+#     at next (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)
+#     at Route.dispatch (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\route.js:119:3)
+#     at Layer.handle [as handle_request] (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)
+#     at E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:284:15
+#     at Function.process_params (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)
+#     at next (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)
+#     at Function.handle (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:175:3)
+#     at router (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:47:12)
+# Subtest: notifications: alert dispatch records GRAY for unconfigured channel
+not ok 138 - notifications: alert dispatch records GRAY for unconfigured channel
+  ---
+  duration_ms: 16.3372
+  type: 'test'
+  location: 'E:\\demo video\\env-dashboard\\backend\\test\\api.test.js:290:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    500 !== 200
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 500
+  operator: 'strictEqual'
+  stack: |-
+    login (E:\demo video\env-dashboard\backend\test\api.test.js:25:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async TestContext.<anonymous> (E:\demo video\env-dashboard\backend\test\api.test.js:291:17)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# request failed TypeError: keyFn is not a function
+#     at E:\\demo video\\env-dashboard\\backend\\src\\middleware\\auth.js:63:18
+#     at Layer.handle [as handle_request] (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)
+#     at next (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)
+#     at Route.dispatch (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\route.js:119:3)
+#     at Layer.handle [as handle_request] (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)
+#     at E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:284:15
+#     at Function.process_params (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)
+#     at next (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)
+#     at Function.handle (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:175:3)
+#     at router (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:47:12)
+# Subtest: notifications: SMS/Telegram/Slack show GRAY when unconfigured
+not ok 139 - notifications: SMS/Telegram/Slack show GRAY when unconfigured
+  ---
+  duration_ms: 22.4321
+  type: 'test'
+  location: 'E:\\demo video\\env-dashboard\\backend\\test\\api.test.js:300:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    500 !== 200
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 500
+  operator: 'strictEqual'
+  stack: |-
+    login (E:\demo video\env-dashboard\backend\test\api.test.js:25:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async TestContext.<anonymous> (E:\demo video\env-dashboard\backend\test\api.test.js:301:17)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: notifications: email adapter validates required fields
+ok 140 - notifications: email adapter validates required fields
+  ---
+  duration_ms: 3.2086
+  type: 'test'
+  ...
+# [PERF] arch checks 0 ms
+# [PERF] json size 3507 bytes
+# Subtest: storage: PostgreSQL is GRAY when not enabled
+ok 141 - storage: PostgreSQL is GRAY when not enabled
+  ---
+  duration_ms: 93.4901
+  type: 'test'
+  ...
+# [PERF] arch checks 0 ms
+# [PERF] json size 3511 bytes
+# Subtest: storage: MemoryStore is independently GREEN when active
+ok 142 - storage: MemoryStore is independently GREEN when active
+  ---
+  duration_ms: 51.1593
+  type: 'test'
+  ...
+# [PERF] arch checks 0 ms
+# [PERF] json size 3731 bytes
+# Subtest: storage: each backend reported independently in architecture snapshot
+ok 143 - storage: each backend reported independently in architecture snapshot
+  ---
+  duration_ms: 89.9613
+  type: 'test'
+  ...
+# [PERF] arch checks 2 ms
+# [PERF] json size 3513 bytes
+# Subtest: storage: optional storage components do not make system RED when GRAY
+ok 144 - storage: optional storage components do not make system RED when GRAY
+  ---
+  duration_ms: 51.7117
+  type: 'test'
+  ...
+# [PERF] json size 315 bytes
+# Subtest: providers: fallback provider is NOT_CONFIGURED by default
+ok 145 - providers: fallback provider is NOT_CONFIGURED by default
+  ---
+  duration_ms: 26.0064
+  type: 'test'
+  ...
+# [PERF] json size 392 bytes
+# Subtest: providers: Open-Meteo is CONFIGURED and GREEN by default (real network possible)
+ok 146 - providers: Open-Meteo is CONFIGURED and GREEN by default (real network possible)
+  ---
+  duration_ms: 18.3877
+  type: 'test'
+  ...
+# request failed TypeError: keyFn is not a function
+#     at E:\\demo video\\env-dashboard\\backend\\src\\middleware\\auth.js:63:18
+#     at Layer.handle [as handle_request] (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)
+#     at next (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)
+#     at Route.dispatch (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\route.js:119:3)
+#     at Layer.handle [as handle_request] (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)
+#     at E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:284:15
+#     at Function.process_params (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)
+#     at next (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)
+#     at Function.handle (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:175:3)
+#     at router (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:47:12)
+# Subtest: providers: OpenWeather is NOT_CONFIGURED without credentials
+not ok 147 - providers: OpenWeather is NOT_CONFIGURED without credentials
+  ---
+  duration_ms: 17.6243
+  type: 'test'
+  location: 'E:\\demo video\\env-dashboard\\backend\\test\\api.test.js:378:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    500 !== 200
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 500
+  operator: 'strictEqual'
+  stack: |-
+    login (E:\demo video\env-dashboard\backend\test\api.test.js:25:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async TestContext.<anonymous> (E:\demo video\env-dashboard\backend\test\api.test.js:379:17)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# [PERF] arch checks 0 ms
+# [PERF] json size 3726 bytes
+# Subtest: providers: provider runtime states in architecture snapshot
+ok 148 - providers: provider runtime states in architecture snapshot
+  ---
+  duration_ms: 40.3209
+  type: 'test'
+  ...
+# request failed TypeError: keyFn is not a function
+#     at E:\\demo video\\env-dashboard\\backend\\src\\middleware\\auth.js:63:18
+#     at Layer.handle [as handle_request] (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)
+#     at next (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)
+#     at Route.dispatch (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\route.js:119:3)
+#     at Layer.handle [as handle_request] (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)
+#     at E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:284:15
+#     at Function.process_params (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)
+#     at next (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)
+#     at Function.handle (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:175:3)
+#     at router (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:47:12)
+# Subtest: notifications: channel CRUD + enable/disable lifecycle
+not ok 149 - notifications: channel CRUD + enable/disable lifecycle
+  ---
+  duration_ms: 22.4422
+  type: 'test'
+  location: 'E:\\demo video\\env-dashboard\\backend\\test\\api.test.js:401:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    500 !== 200
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 500
+  operator: 'strictEqual'
+  stack: |-
+    login (E:\demo video\env-dashboard\backend\test\api.test.js:25:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async TestContext.<anonymous> (E:\demo video\env-dashboard\backend\test\api.test.js:402:17)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# request failed TypeError: keyFn is not a function
+#     at E:\\demo video\\env-dashboard\\backend\\src\\middleware\\auth.js:63:18
+#     at Layer.handle [as handle_request] (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)
+#     at next (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)
+#     at Route.dispatch (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\route.js:119:3)
+#     at Layer.handle [as handle_request] (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)
+#     at E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:284:15
+#     at Function.process_params (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)
+#     at next (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)
+#     at Function.handle (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:175:3)
+#     at router (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:47:12)
+# Subtest: notifications: webhook test records real network attempt
+not ok 150 - notifications: webhook test records real network attempt
+  ---
+  duration_ms: 34.1255
+  type: 'test'
+  location: 'E:\\demo video\\env-dashboard\\backend\\test\\api.test.js:431:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    500 !== 200
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 500
+  operator: 'strictEqual'
+  stack: |-
+    login (E:\demo video\env-dashboard\backend\test\api.test.js:25:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async TestContext.<anonymous> (E:\demo video\env-dashboard\backend\test\api.test.js:432:17)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# [PERF] arch checks 0 ms
+# [PERF] json size 3507 bytes
+# Subtest: system health: core components are GREEN, optional show correct states
+ok 151 - system health: core components are GREEN, optional show correct states
+  ---
+  duration_ms: 69.668
+  type: 'test'
+  ...
+# [PERF] arch checks 1 ms
+# [PERF] json size 1947 bytes
+# Subtest: system health: /api/v1/health returns same snapshot shape
+ok 152 - system health: /api/v1/health returns same snapshot shape
+  ---
+  duration_ms: 72.2637
+  type: 'test'
+  ...
+# [PERF] json size 951 bytes
+# Subtest: quality: snapshot has overallScore and issues list
+ok 153 - quality: snapshot has overallScore and issues list
+  ---
+  duration_ms: 37.9708
+  type: 'test'
+  ...
+# [PERF] json size 75 bytes
+# [PERF] json size 75 bytes
+# Subtest: quality: issues and history endpoints return arrays
+ok 154 - quality: issues and history endpoints return arrays
+  ---
+  duration_ms: 52.4902
+  type: 'test'
+  ...
+# [PERF] json size 125 bytes
+# Subtest: maintenance: unknown station returns empty history (200)
+ok 155 - maintenance: unknown station returns empty history (200)
+  ---
+  duration_ms: 40.0679
+  type: 'test'
+  ...
+# request failed TypeError: keyFn is not a function
+#     at E:\\demo video\\env-dashboard\\backend\\src\\middleware\\auth.js:63:18
+#     at Layer.handle [as handle_request] (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)
+#     at next (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\route.js:149:13)
+#     at Route.dispatch (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\route.js:119:3)
+#     at Layer.handle [as handle_request] (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\layer.js:95:5)
+#     at E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:284:15
+#     at Function.process_params (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)
+#     at next (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)
+#     at Function.handle (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:175:3)
+#     at router (E:\\demo video\\env-dashboard\\backend\\node_modules\\express\\lib\\router\\index.js:47:12)
+# Subtest: alerts: stats reflect state transitions
+not ok 156 - alerts: stats reflect state transitions
+  ---
+  duration_ms: 39.0052
+  type: 'test'
+  location: 'E:\\demo video\\env-dashboard\\backend\\test\\api.test.js:500:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    500 !== 200
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 500
+  operator: 'strictEqual'
+  stack: |-
+    login (E:\demo video\env-dashboard\backend\test\api.test.js:25:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async TestContext.<anonymous> (E:\demo video\env-dashboard\backend\test\api.test.js:501:17)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...

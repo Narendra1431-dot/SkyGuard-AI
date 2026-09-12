@@ -188,8 +188,8 @@ router.post('/human-label', validateHumanLabel, async (req, res) => {
             reason: reason || notes,
             timestamp,
             source: 'human_labeling_workflow',
-            validated: true,
-            approved: true,
+            reviewedBy: reviewerId,  // Add actual reviewer for provenance
+            reviewedAt: timestamp,
             raw: rawData,
             provenance: {
                 station: rawData.stationId,

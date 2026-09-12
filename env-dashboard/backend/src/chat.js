@@ -1,9 +1,5 @@
 'use strict';
 
-/**
- * Rule-based chat assistant. Returns a structured payload the frontend can
- * render (text + optional chart-friendly data).
- */
 function handleQuery(q, ctx) {
   const text = (q || '').trim();
   const lower = text.toLowerCase();
@@ -12,13 +8,13 @@ function handleQuery(q, ctx) {
 
   if (/help|what can|commands/.test(lower)) {
     return reply(
-      'Try one of these:\n' +
-      '• What is the current AQI in Hyderabad?\n' +
-      '• Show anomalies today\n' +
-      '• Which station is critical?\n' +
-      '• Compare temperature across stations\n' +
-      '• Health score trend\n' +
-      '• Top 3 stations by rainfall',
+      'Try one of these:\\n' +
+      '\\u00b7 What is the current AQI in Hyderabad?\\n' +
+      '\\u00b7 Show anomalies today\\n' +
+      '\\u00b7 Which station is critical?\\n' +
+      '\\u00b7 Compare temperature across stations\\n' +
+      '\\u00b7 Health score trend\\n' +
+      '\\u00b7 Top 3 stations by rainfall',
       []
     );
   }
@@ -37,11 +33,11 @@ function handleQuery(q, ctx) {
   }
 
   // Temperature
-  if (/temperature|temp\b/.test(lower)) {
+  if (/temperature|temp\\b/.test(lower)) {
     const city = matchCity(lower) || 'Delhi Central';
     const r = ctx.latestByCity[city];
     if (!r) return reply(`No data for ${city}.`, []);
-    return reply(`Temperature at ${city} is **${r.temperature.toFixed(1)} °C**.`, []);
+    return reply(`Temperature at ${city} is **${r.temperature.toFixed(1)} \\u00b0C**.`, []);
   }
 
   // Humidity
@@ -62,8 +58,8 @@ function handleQuery(q, ctx) {
   if (/critical/.test(lower)) {
     if (!ctx.criticalStations.length) return reply('No stations are currently in critical state.', []);
     return reply(
-      'Stations currently flagged as **critical**:\n' +
-      ctx.criticalStations.map((s) => `• ${s.name} (${s.reason})`).join('\n'),
+      'Stations currently flagged as **critical**:\\n' +
+      ctx.criticalStations.map((s) => `\\u00b7 ${s.name} (${s.reason})`).join('\\n'),
       []
     );
   }
@@ -76,8 +72,8 @@ function handleQuery(q, ctx) {
   // Rainfall
   if (/rain/.test(lower)) {
     const sorted = [...ctx.latestByCityEntries].sort((a, b) => b[1].rainfall - a[1].rainfall);
-    const top = sorted.slice(0, 3).map(([name, r]) => `• ${name}: ${r.rainfall.toFixed(2)} mm`).join('\n');
-    return reply(`Top rainfall right now:\n${top}`, []);
+    const top = sorted.slice(0, 3).map(([name, r]) => `\\u00b7 ${name}: ${r.rainfall.toFixed(2)} mm`).join('\\n');
+    return reply(`Top rainfall right now:\\n${top}`, []);
   }
 
   // Health score

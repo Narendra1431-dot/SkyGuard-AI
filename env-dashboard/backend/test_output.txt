@@ -1,0 +1,235 @@
+TAP version 13
+# Subtest: ML Dataset Module
+    # Subtest: FEATURES
+        # Subtest: should have correct feature list
+        ok 1 - should have correct feature list
+          ---
+          duration_ms: 0.9878
+          type: 'test'
+          ...
+        1..1
+    ok 1 - FEATURES
+      ---
+      duration_ms: 1.4926
+      type: 'suite'
+      ...
+    # Subtest: Dataset file paths
+        # Subtest: should have dataset file path
+        ok 1 - should have dataset file path
+          ---
+          duration_ms: 0.1931
+          type: 'test'
+          ...
+        # Subtest: should have metadata file path
+        ok 2 - should have metadata file path
+          ---
+          duration_ms: 0.109
+          type: 'test'
+          ...
+        1..2
+    ok 2 - Dataset file paths
+      ---
+      duration_ms: 0.4803
+      type: 'suite'
+      ...
+    # Subtest: trainTestSplit
+        # Subtest: should split dataset correctly
+        ok 1 - should split dataset correctly
+          ---
+          duration_ms: 0.2412
+          type: 'test'
+          ...
+        # Subtest: should produce deterministic split with same seed
+        ok 2 - should produce deterministic split with same seed
+          ---
+          duration_ms: 0.2983
+          type: 'test'
+          ...
+        1..2
+    ok 3 - trainTestSplit
+      ---
+      duration_ms: 0.7359
+      type: 'suite'
+      ...
+    1..3
+ok 1 - ML Dataset Module
+  ---
+  duration_ms: 3.2701
+  type: 'suite'
+  ...
+# Subtest: ML Training Module
+    # Subtest: sigmoid
+        # Subtest: should return 0.5 for input 0
+        ok 1 - should return 0.5 for input 0
+          ---
+          duration_ms: 0.2049
+          type: 'test'
+          ...
+        # Subtest: should approach 1 for large positive input
+        ok 2 - should approach 1 for large positive input
+          ---
+          duration_ms: 0.7885
+          type: 'test'
+          ...
+        # Subtest: should approach 0 for large negative input
+        ok 3 - should approach 0 for large negative input
+          ---
+          duration_ms: 0.0971
+          type: 'test'
+          ...
+        1..3
+    ok 1 - sigmoid
+      ---
+      duration_ms: 1.2825
+      type: 'suite'
+      ...
+    # Subtest: computeMetrics
+        # Subtest: should compute correct metrics for perfect predictions
+        ok 1 - should compute correct metrics for perfect predictions
+          ---
+          duration_ms: 0.2569
+          type: 'test'
+          ...
+        # Subtest: should compute correct metrics for no positive predictions
+        ok 2 - should compute correct metrics for no positive predictions
+          ---
+          duration_ms: 0.2597
+          type: 'test'
+          ...
+        # Subtest: should handle empty predictions
+        ok 3 - should handle empty predictions
+          ---
+          duration_ms: 0.0889
+          type: 'test'
+          ...
+        1..3
+    ok 2 - computeMetrics
+      ---
+      duration_ms: 0.6896
+      type: 'suite'
+      ...
+    # Subtest: train
+        # Subtest: should train a model on simple data
+        ok 1 - should train a model on simple data
+          ---
+          duration_ms: 6.8771
+          type: 'test'
+          ...
+        # Subtest: should throw on empty dataset
+        ok 2 - should throw on empty dataset
+          ---
+          duration_ms: 0.5877
+          type: 'test'
+          ...
+        1..2
+    ok 3 - train
+      ---
+      duration_ms: 7.5552
+      type: 'suite'
+      ...
+    # Subtest: evaluate
+        # Subtest: should evaluate model on test set
+        ok 1 - should evaluate model on test set
+          ---
+          duration_ms: 6.3408
+          type: 'test'
+          ...
+        1..1
+    ok 4 - evaluate
+      ---
+      duration_ms: 6.421
+      type: 'suite'
+      ...
+    # Subtest: inference
+        # Subtest: should perform inference with model
+        ok 1 - should perform inference with model
+          ---
+          duration_ms: 1.1857
+          type: 'test'
+          ...
+        # Subtest: should throw on invalid model
+        ok 2 - should throw on invalid model
+          ---
+          duration_ms: 0.2828
+          type: 'test'
+          ...
+        1..2
+    ok 5 - inference
+      ---
+      duration_ms: 1.591
+      type: 'suite'
+      ...
+    1..5
+ok 2 - ML Training Module
+  ---
+  duration_ms: 17.9488
+  type: 'suite'
+  ...
+# Subtest: ML Integration
+    # Subtest: Full training pipeline
+        # Subtest: should complete full pipeline: train -> evaluate -> inference
+        ok 1 - should complete full pipeline: train -> evaluate -> inference
+          ---
+          duration_ms: 3.5648
+          type: 'test'
+          ...
+        1..1
+    ok 1 - Full training pipeline
+      ---
+      duration_ms: 3.6159
+      type: 'suite'
+      ...
+    1..1
+ok 3 - ML Integration
+  ---
+  duration_ms: 3.6923
+  type: 'suite'
+  ...
+# Subtest: LABEL_PROVENANCE
+    # Subtest: should document that labels come from rule-engine-derived anomaly (legacy)
+    ok 1 - should document that labels come from rule-engine-derived anomaly (legacy)
+      ---
+      duration_ms: 0.1077
+      type: 'test'
+      ...
+    1..1
+ok 4 - LABEL_PROVENANCE
+  ---
+  duration_ms: 0.1511
+  type: 'suite'
+  ...
+# Subtest: ML Model Versioning
+    # Subtest: should expose getModelVersion when model exists
+    ok 1 - should expose getModelVersion when model exists
+      ---
+      duration_ms: 32.1414
+      type: 'test'
+      ...
+    1..1
+ok 5 - ML Model Versioning
+  ---
+  duration_ms: 32.201
+  type: 'suite'
+  ...
+# Subtest: ML Rule-vs-ML Distinction
+    # Subtest: should clearly separate rule-based score from ML score
+    ok 1 - should clearly separate rule-based score from ML score
+      ---
+      duration_ms: 0.3164
+      type: 'test'
+      ...
+    1..1
+ok 6 - ML Rule-vs-ML Distinction
+  ---
+  duration_ms: 0.3874
+  type: 'suite'
+  ...
+1..6
+# tests 20
+# suites 15
+# pass 20
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 895.9326

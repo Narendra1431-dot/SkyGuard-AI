@@ -133,11 +133,11 @@ function buildRecommendation(r, reasons) {
 
 function healthScore(r) {
   let score = 100;
-  score -= Math.max(0, r.aqi - THRESHOLDS.aqi.good) * 0.25;
-  score -= Math.max(0, r.temperature - THRESHOLDS.temperature.good) * 3;
-  score -= Math.max(0, THRESHOLDS.humidity.good - r.humidity) * 0.8;
-  score -= Math.max(0, r.wind - THRESHOLDS.wind.good) * 4;
-  score -= Math.max(0, r.rainfall - 3) * 5;
+  if (r.aqi != null) score -= Math.max(0, r.aqi - THRESHOLDS.aqi.good) * 0.25;
+  if (r.temperature != null) score -= Math.max(0, r.temperature - THRESHOLDS.temperature.good) * 3;
+  if (r.humidity != null) score -= Math.max(0, THRESHOLDS.humidity.good - r.humidity) * 0.8;
+  if (r.wind != null) score -= Math.max(0, r.wind - THRESHOLDS.wind.good) * 4;
+  if (r.rainfall != null) score -= Math.max(0, r.rainfall - 3) * 5;
   return Math.max(0, Math.min(100, +score.toFixed(1)));
 }
 

@@ -20,7 +20,6 @@ function verifyToken(token) {
 function extractToken(req) {
   const h = req.headers['authorization'] || '';
   if (h.toLowerCase().startsWith('bearer ')) return h.slice(7).trim();
-  // Query-string tokens are no longer supported; they leak via referer/logs.
   return null;
 }
 
@@ -40,7 +39,7 @@ async function authRequired(req, res, next) {
 
 function roleRequired(...roles) {
   return (req, res, next) => {
-    if (!req.user) return res.status(401).json({ success: false, error: { message: 'Authentication required', requestId: req.requestId } });
+    if (!req.user) return res.status(403).json({ success: false, error: { message: 'Forbidden: insufficient role', requestId: req.requestId } });
     if (!roles.includes(req.user.role)) {
       return res.status(403).json({ success: false, error: { message: 'Forbidden: insufficient role', requestId: req.requestId } });
     }
@@ -55,28 +54,4 @@ function requestId(req, res, next) {
   next();
 }
 
-const rateLimitBuckets = new Map();
-function rateLimit({ keyFn, limit, windowMs, message }) {
-  return (req, res, next) => {
-    const k = `${keyFn(req)}`;
-    const now = Date.now();
-    const bucket = rateLimitBuckets.get(k) || { count: 0, resetAt: now + windowMs };
-    if (now > bucket.resetAt) { bucket.count = 0; bucket.resetAt = now + windowMs; }
-    bucket.count += 1;
-    rateLimitBuckets.set(k, bucket);
-    if (bucket.count > limit) {
-      return res.status(429).json({ success: false, error: { code: 'RATE_LIMITED', message: message || 'Too many requests', requestId: req.requestId } });
-    }
-    next();
-  };
-}
-
-function authRateLimit({ limit = 10, windowMs = 60_000 } = {}) {
-  return rateLimit({ keyFn: (req) => `auth:${req.ip || req.headers['x-forwarded-for'] || 'unknown'}`, limit, windowMs, message: 'Too many auth attempts' });
-}
-
-function agentRateLimit({ limit = 60, windowMs = 60_000 } = {}) {
-  return rateLimit({ keyFn: (req) => `agent:${(req.user && req.user.id) || req.ip || 'unknown'}`, limit, windowMs, message: 'Too many agent requests' });
-}
-
-module.exports = { signToken, verifyToken, authRequired, roleRequired, requestId, rateLimit, authRateLimit, agentRateLimit };
+module.exports = { signToken, verifyToken, authRequired, roleRequired, requestId };
