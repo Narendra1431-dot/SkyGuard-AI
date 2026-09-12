@@ -9,11 +9,31 @@ const pgUsers = require('./users');
 const memStore = { users: new Map() };
 
 async function initFromEnv(cfg) {
+  const isProd = process.env.NODE_ENV === 'production';
+  const demoMode = process.env.DEMO_MODE === 'true';
+
+  // In production with demo mode disabled, require explicit credentials
+  if (isProd && !demoMode) {
+    if (!cfg.adminUsername || !cfg.adminPassword) {
+      throw new Error('FATAL: ADMIN_USERNAME and ADMIN_PASSWORD must be set in production with DEMO_MODE=false');
+    }
+  }
+
   const username = (cfg.adminUsername || 'admin').toLowerCase();
+  const password = cfg.adminPassword || (demoMode ? 'admin123!Change' : null);
+
+  // In production without demo mode, reject default password
+  if (isProd && !demoMode && password === 'admin123!Change') {
+    throw new Error('FATAL: ADMIN_PASSWORD must be set to a strong value in production');
+  }
+
   // Always seed the in-memory admin so authentication keeps working even if
   // PostgreSQL is enabled but temporarily unreachable.
   if (!memStore.users.has(username)) {
-    const hash = await bcrypt.hash(cfg.adminPassword || 'admin123!Change', 10);
+    if (!password) {
+      throw new Error('FATAL: ADMIN_PASSWORD not configured and no demo mode fallback available');
+    }
+    const hash = await bcrypt.hash(password, 10);
     memStore.users.set(username, { id: 1, username, password_hash: hash, role: 'admin' });
     console.log(`[auth] seeded in-memory admin user: ${username}`);
   }

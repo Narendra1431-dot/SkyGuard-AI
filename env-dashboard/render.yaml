@@ -1,0 +1,58 @@
+services:
+  - type: web
+    name: skyguard-backend
+    runtime: node
+    plan: starter
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: DEMO_MODE
+        value: false
+      - key: PG_ENABLED
+        value: true
+      - key: PG_HOST
+        fromDatabase:
+          name: skyguard-db
+          property: host
+      - key: PG_PORT
+        value: 5432
+      - key: PG_USER
+        value: skyguard
+      - key: PG_PASSWORD
+        generateValue: true
+      - key: PG_DATABASE
+        value: skyguard
+      - key: JWT_SECRET
+        generateValue: true
+      - key: ADMIN_USERNAME
+        generateValue: true
+      - key: ADMIN_PASSWORD
+        generateValue: true
+      - key: CORS_ORIGIN
+        value: https://skyguard-ai-software.netlify.app
+      - key: PROVIDER_MODE
+        value: open-meteo
+      - key: OPENWEATHER_API_KEY
+        sync: false
+      - key: LLM_PROVIDER
+        value: ollama
+      - key: OLLAMA_BASE_URL
+        value: http://localhost:11434
+      - key: OLLAMA_MODEL
+        value: qwen2.5:7b
+      - key: LLM_DAILY_TOKEN_BUDGET
+        value: 200000
+      - key: LLM_MAX_TOKENS_PER_CALL
+        value: 1500
+      - key: EMBEDDING_BACKEND
+        value: local-hash
+      - key: ALERT_RATE_LIMIT_PER_MIN
+        value: 10
+
+databases:
+  - name: skyguard-db
+    plan: starter

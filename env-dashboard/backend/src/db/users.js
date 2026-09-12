@@ -7,8 +7,29 @@ const { ensureSchema } = require('./schema');
 async function ensureAdmin(cfg) {
   if (!pg.isEnabled()) return;
   await ensureSchema(pg);
+
+  const isProd = process.env.NODE_ENV === 'production';
+  const demoMode = process.env.DEMO_MODE === 'true';
+
+  // In production with demo mode disabled, require explicit credentials
+  if (isProd && !demoMode) {
+    if (!cfg.adminUsername || !cfg.adminPassword) {
+      throw new Error('FATAL: ADMIN_USERNAME and ADMIN_PASSWORD must be set in production with DEMO_MODE=false');
+    }
+  }
+
   const username = (cfg.adminUsername || 'admin').toLowerCase();
-  const password = cfg.adminPassword || 'admin123!Change';
+  const password = cfg.adminPassword || (demoMode ? 'admin123!Change' : null);
+
+  // In production without demo mode, reject default password
+  if (isProd && !demoMode && password === 'admin123!Change') {
+    throw new Error('FATAL: ADMIN_PASSWORD must be set to a strong value in production');
+  }
+
+  if (!password) {
+    throw new Error('FATAL: ADMIN_PASSWORD not configured and no demo mode fallback available');
+  }
+
   const r = await pg.query('SELECT id FROM users WHERE username = $1', [username]);
   if (r.rowCount === 0) {
     const hash = await bcrypt.hash(password, 10);
