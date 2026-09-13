@@ -101,4 +101,16 @@ function showLogin() {
 }
 
 initAuth();
-if (apiClient.isAuthed()) showApp(); else showLogin();
+
+// DEMO LOGIN BYPASS — LOCAL ONLY
+// For demo purposes, skip login and directly show dashboard.
+// Triggers when served on localhost:4000 (backend serves SPA) or
+// localhost:8080 (separate static server), as long as no valid token exists.
+const isLocalDemo = window.location.hostname === 'localhost' && (window.location.port === '4000' || window.location.port === '8080');
+if (isLocalDemo && !apiClient.isAuthed()) {
+  showApp();
+} else if (apiClient.isAuthed()) {
+  showApp();
+} else {
+  showLogin();
+}

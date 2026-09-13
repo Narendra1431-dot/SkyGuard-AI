@@ -163,13 +163,17 @@ class ProviderRegistry {
       return this._localSource(station);
     }
     const modeProvider = this.providers.get(this.mode);
-    const ordered = [...this.providers.values()]
-      .filter((p) => p.enabled && (p.id === 'open-meteo' || p.hasKey))
-      .sort((a, b) => {
-        if (a.id === this.mode) return -1;
-        if (b.id === this.mode) return 1;
-        return a.priority - b.priority;
-      });
+    // When in a specific provider mode, only try that provider first
+    // Only include fallback providers if the mode provider is not configured
+    let ordered;
+    if (modeProvider && modeProvider.enabled) {
+      ordered = [modeProvider];
+    } else {
+      // Fallback to all enabled providers sorted by priority
+      ordered = [...this.providers.values()]
+        .filter((p) => p.enabled && (p.id === 'open-meteo' || p.hasKey))
+        .sort((a, b) => a.priority - b.priority);
+    }
 
     if (ordered.length === 0) {
       return {
@@ -242,8 +246,7 @@ class ProviderRegistry {
         observationTime: new Date().toISOString() 
       };
       
-      // Cache the failure to avoid repeated attempts
-      this.cache.set(cacheKey, failureResult);
+      // Do not cache failures; let circuit breaker track repeated failures
       return failureResult;
     })();
     

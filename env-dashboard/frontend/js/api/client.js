@@ -19,6 +19,12 @@ function setUser(u) { if (u) localStorage.setItem(USER_KEY, JSON.stringify(u)); 
 
 function isAuthed() { return !!getToken(); }
 
+// Demo mode: backend sets DEMO_MODE=true locally, allowing unauthenticated
+// access to all APIs for demo purposes. Frontend reads this from the
+// environment config injected by the backend at SPA boot time, falling back
+// to detecting the absence of a token when no explicit flag is set.
+const DEMO_MODE = (typeof window !== 'undefined' && window.SKYGUARD_DEMO_MODE === true) || (typeof window !== 'undefined' && !getToken() && window.location.hostname === 'localhost');
+
 function _dedupeKey(method, path, body, query) {
   const q = query ? JSON.stringify(Object.entries(query).sort(([a], [b]) => a.localeCompare(b))) : '';
   const b = body ? JSON.stringify(body) : '';
@@ -88,7 +94,7 @@ async function request(method, path, { body, query, timeoutMs = 15000, auth = tr
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), timeoutMs);
   const headers = { 'Content-Type': 'application/json' };
-  if (auth) {
+  if (!DEMO_MODE) {
     const token = getToken();
     if (token) headers['Authorization'] = `Bearer ${token}`;
   }

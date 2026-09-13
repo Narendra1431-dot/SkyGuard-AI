@@ -15,7 +15,10 @@ class SocketManager {
       console.warn('socket.io client not loaded yet');
       return null;
     }
-    this.socket = io({ transports: ['websocket', 'polling'], reconnection: true, query: { since: this.lastSeq } });
+    const socketUrl = (typeof window !== 'undefined' && window.SKYGUARD_SOCKET_URL)
+      || (typeof window !== 'undefined' && window.SKYGUARD_API_BASE)
+      || 'http://localhost:4000';
+    this.socket = io(socketUrl, { transports: ['websocket', 'polling'], reconnection: true, query: { since: this.lastSeq } });
     this.socket.on('connect', () => {
       this.setState('connected');
       try { this.socket.emit('client:hello', { since: this.lastSeq }); } catch (_) {}

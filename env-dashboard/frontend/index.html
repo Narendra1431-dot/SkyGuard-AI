@@ -6,7 +6,7 @@
     <title>SkyGuard AI - Real-Time Environmental Monitoring</title>
     <link rel="icon" type="image/png" href="/assets/skyguard-official.png" />
     <script async src="https://cdn.tailwindcss.com"></script>
-    <script async src="/socket.io/socket.io.js"></script>
+    <script async src="https://cdn.socket.io/4.8.3/socket.io.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -23,18 +23,18 @@
                 </div>
                 <label>
                     <span>Username</span>
-                    <input type="text" name="username" required value="admin" />
+                    <input type="text" name="username" required placeholder="Enter username" />
                 </label>
                 <label>
                     <span>Password</span>
-                    <input type="password" name="password" required value="admin123!Change" />
+                    <input type="password" name="password" required placeholder="Enter password" />
                 </label>
                 <div id="login-error" class="login-error" hidden></div>
                 <button type="submit" class="login-btn">
                     <i class="fa-solid fa-right-to-bracket"></i>
                     <span>Sign in</span>
                 </button>
-                <p class="login-hint">Default seeded credentials (memory mode). <code>admin / admin123!Change</code></p>
+                <p class="login-hint">Contact your administrator for credentials.</p>
             </form>
         </div>
         <div id="main-app" hidden>
@@ -68,11 +68,20 @@
         </div>
     </div>
     <script>
-  // Set the backend API base URL for the frontend
-  // Use Netlify environment variable in production, localhost for development
-  window.SKYGUARD_API_BASE = (typeof process !== 'undefined' && process.env && process.env.SKYGUARD_API_BASE)
-    || (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_BASE)
-    || 'https://skyguard-backend.onrender.com';
+  // Backend API base URL. In production on Netlify, the backend lives on Render.
+  // Detect production by hostname and route accordingly; local dev defaults to
+  // same-origin (Express serves both) or http://localhost:4000.
+  const isProduction = window.location.hostname.includes('netlify.app') || window.location.hostname.includes('skyguard');
+  const defaultApiBase = isProduction
+    ? 'https://skyguard-backend.onrender.com'
+    : (window.location.port === '8080' || window.location.port === '4000' ? window.location.origin : 'http://localhost:4000');
+  window.SKYGUARD_API_BASE = (typeof window !== 'undefined' && window.SKYGUARD_API_BASE)
+    || (typeof window !== 'undefined' && defaultApiBase)
+    || 'http://localhost:4000';
+  // Socket.IO server URL (defaults to API_BASE)
+  window.SKYGUARD_SOCKET_URL = (typeof window !== 'undefined' && window.SKYGUARD_SOCKET_URL)
+    || (typeof window !== 'undefined' && window.SKYGUARD_API_BASE)
+    || 'http://localhost:4000';
 </script>
 <script type="module" src="/js/main.js"></script>
 </body>

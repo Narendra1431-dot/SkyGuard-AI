@@ -280,8 +280,9 @@ async function computeStatusNow() {
   const evalSet = loadEvaluationSet();
 
   let recent = [];
+  let storeError = null;
   if (store && typeof store.recentReadings === 'function') {
-    try { recent = await store.recentReadings(30); } catch (_) { recent = []; }
+    try { recent = await store.recentReadings(30); } catch (e) { recent = []; storeError = e; }
   }
   const drift = computeDrift(meta, recent);
 
@@ -359,7 +360,7 @@ async function computeStatusNow() {
         : evaluationNote + (leakageStatus === 'FAIL' ? ' Training labels are leaked (rule-engine-derived); retrain from independent human labels to clear.' : ''))
       : 'No trained model. Run Retrain to train the ML classifier.',
     version: trained ? artifact.model.version : null,
-    inferenceError: null,
+    inferenceError: storeError ? storeError.message : null,
   };
   return snapshot;
 }
@@ -426,10 +427,14 @@ async function evaluate({ requestedBy = 'system-bootstrap' } = {}) {
     throw e;
   }
   const completedAt = new Date().toISOString();
+  const runStatus = snap.inferenceError ? 'FAILED' : 'COMPLETED';
+  const runNotes = snap.inferenceError
+    ? `Evaluation failed: ${snap.inferenceError}`
+    : `Evaluation snapshot (${snap.evaluationStatus}) - ${snap.notes || ''}`.trim();
   try {
     await mlRuns.insertRun({
       id: `run_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-      status: 'COMPLETED',
+      status: runStatus,
       startedAt,
       completedAt,
       metrics: snap.metrics || { samples: 0 },
@@ -439,7 +444,7 @@ async function evaluate({ requestedBy = 'system-bootstrap' } = {}) {
       drift: snap.drift,
       latency: snap.latency,
       threshold: snap.threshold,
-      notes: `Evaluation snapshot (${snap.evaluationStatus}) - ${snap.notes || ''}`.trim(),
+      notes: runNotes,
       requestedBy,
     });
   } catch (e) {
@@ -447,6 +452,9 @@ async function evaluate({ requestedBy = 'system-bootstrap' } = {}) {
   }
   statusCache = snap;
   statusCacheAt = Date.now();
+  if (snap.inferenceError) {
+    return { ...snap, status: 'FAILED', notes: `Evaluation failed: ${snap.inferenceError}` };
+  }
   return snap;
 }
 
@@ -617,9 +625,12 @@ async function historyRuns(limit = 20) {
 function deriveHealthFromState({ status, modelType, evaluationStatus }) {
   // Map ML status to health status based on established criteria
   // From architecture.js: ML node uses GREEN for UP, RED for DOWN, DEGRADED for others
-  
+
   if (status === 'READY') {
     // Ready model with verified evaluation
+    return 'GREEN';
+  } else if (status === 'SUCCESS') {
+    // Successful operation/service
     return 'GREEN';
   } else if (status === 'NO_MODEL') {
     // No model trained yet

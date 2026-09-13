@@ -61,7 +61,7 @@ module.exports = {
   },
 
   auth: {
-    jwtSecret: env.JWT_SECRET,
+    jwtSecret: env.JWT_SECRET || 'change-me-to-a-long-random-string-please',
     expiresHours: parseInt(env.JWT_EXPIRES_HOURS || '12', 10),
     adminUsername: env.ADMIN_USERNAME,
     adminPassword: env.ADMIN_PASSWORD,
@@ -82,7 +82,7 @@ module.exports = {
   },
 
   llm: {
-    provider: env.LLM_PROVIDER || 'ollama',
+    provider: env.LLM_PROVIDER || 'deterministic-fallback',
     openaiApiKey: env.OPENAI_API_KEY || null,
     openaiModel: env.OPENAI_MODEL || 'gpt-4o-mini',
     azureOpenaiEndpoint: env.AZURE_OPENAI_ENDPOINT || null,

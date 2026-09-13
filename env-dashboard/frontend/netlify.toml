@@ -1,17 +1,26 @@
 # Static site configuration for Netlify
 
-# Set the base directory for the frontend
 [build]
   base = "."
   publish = "."
   command = "echo 'Frontend is a static SPA - no build step needed'"
 
-# SPA routing configuration for client-side routing
+# SPA routing: all routes serve index.html
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
 
-# Environment variable configuration
-[context.production.environment]
-  SKYGUARD_API_BASE = "https://skyguard-backend.onrender.com"  # Replace with actual backend URL
+# Security and CORS headers
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# Allow Socket.IO and API connections to Render backend
+[[headers]]
+  for = "/socket.io/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "https://skyguard-backend.onrender.com"

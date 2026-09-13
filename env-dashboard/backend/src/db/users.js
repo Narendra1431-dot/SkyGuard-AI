@@ -19,7 +19,7 @@ async function ensureAdmin(cfg) {
   }
 
   const username = (cfg.adminUsername || 'admin').toLowerCase();
-  const password = cfg.adminPassword || (demoMode ? 'admin123!Change' : null);
+  const password = cfg.adminPassword || (demoMode || !isProd ? 'admin123!Change' : null);
 
   // In production without demo mode, reject default password
   if (isProd && !demoMode && password === 'admin123!Change') {

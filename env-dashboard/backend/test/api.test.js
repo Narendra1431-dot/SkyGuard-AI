@@ -178,7 +178,7 @@ test('ml: validate + retrain + run history', async () => {
   const auth = { Authorization: `Bearer ${token}` };
   const v = await request(app).post('/api/v1/ml/validate').set(auth);
   assert.equal(v.status, 200);
-  assert.ok(['SUCCESS','FAILED','RUNNING'].includes(v.body.data.status));
+  assert.equal(v.body.data.status, 'UNVERIFIED');
   assert.equal(v.body.data.evaluationStatus, 'UNVERIFIED', 'evaluationStatus must be UNVERIFIED when no independent labeled eval data exists');
   const r = await request(app).post('/api/v1/ml/retrain').set(auth);
   assert.equal(r.status, 200);

@@ -6,19 +6,15 @@ class OpenWeatherProvider {
   constructor({ apiKey = null } = {}) {
     this.id = 'openweather';
     this.name = 'OpenWeather';
-    this.enabled = true;
+    this.enabled = apiKey != null;
     this.requiresKey = true;
-    this.hasKey = false;
+    this.hasKey = apiKey != null;
     this.apiKey = apiKey;
     this.priority = 2;
     this.baseUrl = 'https://api.openweathermap.org/data/2.5/weather';
     this.airPollutionUrl = AIR_POLLUTION_URL;
     this._aqiCache = new Map();
     this._aqiCacheTtlMs = 60_000;
-    if (apiKey) {
-      this.hasKey = true;
-      this.enabled = true;
-    }
   }
 
   setApiKey(key) {

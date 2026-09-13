@@ -1,5 +1,37 @@
 'use strict';
 
+const AGENT_RESPONSE_SCHEMA = {
+  type: 'object',
+  required: ['situation', 'evidence', 'hypotheses', 'confidence', 'recommendation', 'requiredAction', 'approvalRequirement', 'auditRef'],
+  properties: {
+    situation: { type: 'string' },
+    evidence: { type: 'array', items: { type: 'object' } },
+    hypotheses: { type: 'array', items: { type: 'object' } },
+    confidence: { type: 'number', minimum: 0, maximum: 1 },
+    recommendation: { type: 'string' },
+    requiredAction: { type: 'string' },
+    approvalRequirement: { type: 'string' },
+    auditRef: { type: 'string' },
+  },
+  additionalProperties: true,
+};
+
+let _state = {
+  usedToday: 0,
+  day: new Date().toISOString().slice(0, 10),
+};
+
+function _resetBudgetIfNewDay() {
+  const today = new Date().toISOString().slice(0, 10);
+  if (_state.day !== today) { _state.usedToday = 0; _state.day = today; }
+}
+
+function _recordTokens(used) { _state.usedToday += used; }
+
+class BudgetExceededError extends Error {
+  constructor() { super('LLM daily token budget exceeded'); this.code = 'BUDGET_EXCEEDED'; }
+}
+
 class DeterministicProvider {
   constructor() { this.id = 'deterministic-fallback'; }
   async chat({ system, user, schema, maxTokens }) {
@@ -247,23 +279,34 @@ function tryParseJson(s) {
   }
 }
 
-let budgetUsedValue = 0;
+function resetBudget() { _state = { usedToday: 0, day: new Date().toISOString().slice(0, 10) }; }
 
-function resetBudget() {
-  budgetUsedValue = 0;
-}
+function budgetUsed() { _resetBudgetIfNewDay(); return _state.usedToday; }
 
-function budgetUsed() {
-  return budgetUsedValue;
+async function chatWithBudget(provider, args, budget) {
+  _resetBudgetIfNewDay();
+  const daily = budget && Number.isFinite(budget.daily) ? budget.daily : Infinity;
+  if (_state.usedToday >= daily) {
+    const fallback = new DeterministicProvider();
+    const r = await fallback.chat(args);
+    r.fallback = 'budget';
+    return r;
+  }
+  const r = await provider.chat(args);
+  if (r.tokens?.total) _recordTokens(r.tokens.total);
+  return r;
 }
 
 module.exports = {
+  AGENT_RESPONSE_SCHEMA,
+  createProvider,
   DeterministicProvider,
   OpenAIProvider,
   AzureOpenAIProvider,
   OllamaProvider,
-  createProvider,
-  tryParseJson,
-  resetBudget,
+  chatWithBudget,
   budgetUsed,
+  resetBudget,
+  BudgetExceededError,
+  tryParseJson,
 };
