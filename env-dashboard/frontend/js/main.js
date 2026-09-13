@@ -1,6 +1,7 @@
 import { apiClient } from './api/client.js';
 import { socketMgr } from './api/socket.js';
 import { initAuth, requireAuth } from './auth.js';
+import { authApi } from './api/index.js';
 import { registerRoute, startRouter, renderNav, navigate } from './router.js';
 import { toast, globalSearchBox, openCommandPalette } from './utils/ui.js';
 
@@ -110,7 +111,14 @@ const isLocalDemo = window.location.hostname === 'localhost' && (window.location
 if (isLocalDemo && !apiClient.isAuthed()) {
   showApp();
 } else if (apiClient.isAuthed()) {
-  showApp();
+  try {
+    await authApi.me();
+    showApp();
+  } catch (e) {
+    apiClient.setToken(null);
+    apiClient.setUser(null);
+    showLogin();
+  }
 } else {
   showLogin();
 }
