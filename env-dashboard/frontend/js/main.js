@@ -103,12 +103,14 @@ function showLogin() {
 
 initAuth();
 
-// DEMO LOGIN BYPASS — LOCAL ONLY
-// For demo purposes, skip login and directly show dashboard.
-// Triggers when served on localhost:4000 (backend serves SPA) or
-// localhost:8080 (separate static server), as long as no valid token exists.
+// DEMO LOGIN BYPASS — LOCAL + PROTOTYPE
+// For demo/prototype purposes, skip login and directly show dashboard.
+// Triggers on localhost:4000/8080 (backend serves SPA) or the public
+// Netlify prototype host, as long as no valid token exists.
+const isPrototypeHost = window.location.hostname === 'skyguard-ai-software.netlify.app' || window.location.hostname.endsWith('.netlify.app');
 const isLocalDemo = window.location.hostname === 'localhost' && (window.location.port === '4000' || window.location.port === '8080');
-if (isLocalDemo && !apiClient.isAuthed()) {
+const isDemo = isLocalDemo || isPrototypeHost;
+if (isDemo && !apiClient.isAuthed()) {
   showApp();
 } else if (apiClient.isAuthed()) {
   try {

@@ -23,7 +23,12 @@ function isAuthed() { return !!getToken(); }
 // access to all APIs for demo purposes. Frontend reads this from the
 // environment config injected by the backend at SPA boot time, falling back
 // to detecting the absence of a token when no explicit flag is set.
-const DEMO_MODE = (typeof window !== 'undefined' && window.SKYGUARD_DEMO_MODE === true) || (typeof window !== 'undefined' && !getToken() && window.location.hostname === 'localhost');
+const DEMO_MODE = (typeof window !== 'undefined' && window.SKYGUARD_DEMO_MODE === true)
+  || (typeof window !== 'undefined' && !getToken() && (
+    window.location.hostname === 'localhost'
+    || window.location.hostname === 'skyguard-ai-software.netlify.app'
+    || window.location.hostname.endsWith('.netlify.app')
+  ));
 
 function _dedupeKey(method, path, body, query) {
   const q = query ? JSON.stringify(Object.entries(query).sort(([a], [b]) => a.localeCompare(b))) : '';
